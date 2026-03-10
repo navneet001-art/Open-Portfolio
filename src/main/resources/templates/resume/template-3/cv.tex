@@ -1,0 +1,239 @@
+%-----------------------------------------------------------------------------------------------------------------------------------------------%
+%	The MIT License (MIT)
+%
+%	Copyright (c) 2021 Jitin Nair
+%
+%	Permission is hereby granted, free of charge, to any person obtaining a copy
+%	of this software and associated documentation files (the "Software"), to deal
+%	in the Software without restriction, including without limitation the rights
+%	to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+%	copies of the Software, and to permit persons to whom the Software is
+%	furnished to do so, subject to the following conditions:
+%	
+%	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+%	IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+%	FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+%	AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+%	LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+%	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+%	THE SOFTWARE.
+%	
+%
+%-----------------------------------------------------------------------------------------------------------------------------------------------%
+
+%----------------------------------------------------------------------------------------
+%	DOCUMENT DEFINITION
+%----------------------------------------------------------------------------------------
+
+% article class because we want to fully customize the page and not use a cv template
+\documentclass[a4paper,12pt]{article}
+
+%----------------------------------------------------------------------------------------
+%	FONT
+%----------------------------------------------------------------------------------------
+
+% % fontspec allows you to use TTF/OTF fonts directly
+% \usepackage{fontspec}
+% \defaultfontfeatures{Ligatures=TeX}
+
+% % modified for ShareLaTeX use
+% \setmainfont[
+% SmallCapsFont = Fontin-SmallCaps.otf,
+% BoldFont = Fontin-Bold.otf,
+% ItalicFont = Fontin-Italic.otf
+% ]
+% {Fontin.otf}
+
+%----------------------------------------------------------------------------------------
+%	PACKAGES
+%----------------------------------------------------------------------------------------
+\usepackage{url}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{parskip} 	
+
+%other packages for formatting
+\RequirePackage{color}
+\RequirePackage{graphicx}
+\usepackage[usenames,dvipsnames]{xcolor}
+\usepackage[scale=0.9]{geometry}
+\usepackage{tikz}
+\usepackage{fontawesome5}
+\usepackage{tabularx}
+
+%for lists within experience section
+\usepackage{enumitem}
+
+% centered version of 'X' col. type
+\newcolumntype{C}{>{\centering\arraybackslash}X} 
+
+%to prevent spillover of tabular into next pages
+\usepackage{supertabular}
+\usepackage{tabularx}
+\newlength{\fullcollw}
+\setlength{\fullcollw}{0.47\textwidth}
+
+%custom \section
+\usepackage{titlesec}				
+\usepackage{multicol}
+\usepackage{multirow}
+
+%CV Sections inspired by: 
+%http://stefano.italians.nl/archives/26
+\titleformat{\section}{\Large\scshape\raggedright}{}{0em}{}[\titlerule]
+\titlespacing{\section}{0pt}{10pt}{10pt}
+
+%for publications
+\usepackage[style=authoryear,sorting=ynt, maxbibnames=2]{biblatex}
+
+%Setup hyperref package, and colours for links
+\usepackage[unicode, draft=false]{hyperref}
+\definecolor{linkcolour}{rgb}{0,0.2,0.6}
+\hypersetup{colorlinks,breaklinks,urlcolor=linkcolour,linkcolor=linkcolour}
+\addbibresource{citations.bib}
+\setlength\bibitemsep{1em}
+
+%for social icons
+\usepackage{fontawesome5}
+
+%debug page outer frames
+%\usepackage{showframe}
+
+
+% job listing environments
+\newenvironment{jobshort}[2]
+    {
+    \begin{tabularx}{\linewidth}{@{}l X r@{}}
+    \textbf{#1} & \hfill &  #2 \\[3.75pt]
+    \end{tabularx}
+    }
+    {
+    }
+
+\newenvironment{joblong}[2]
+    {
+    \begin{tabularx}{\linewidth}{@{}l X r@{}}
+    \textbf{#1} & \hfill &  #2 \\%
+    \end{tabularx}
+    \vspace{-10pt}
+    \begin{itemize}[nosep,after=\strut, leftmargin=1em, itemsep=3pt,label=--]
+    }
+    {
+    \end{itemize}
+    }
+
+
+
+%----------------------------------------------------------------------------------------
+%	BEGIN DOCUMENT
+%----------------------------------------------------------------------------------------
+\begin{document}
+
+% non-numbered pages
+\pagestyle{empty} 
+
+%----------------------------------------------------------------------------------------
+%	TITLE
+%----------------------------------------------------------------------------------------
+
+% \begin{tabularx}{\linewidth}{ @{}X X@{} }
+% \huge{Your Name}\vspace{2pt} & \hfill \emoji{incoming-envelope} email@email.com \\
+% \raisebox{-0.05\height}\faGithub\ username \ | \
+% \raisebox{-0.00\height}\faLinkedin\ username \ | \ \raisebox{-0.05\height}\faGlobe \ mysite.com  & \hfill \emoji{calling} number
+% \end{tabularx}
+
+\begin{center}
+    [# th:if="${resume.profile != null and resume.profile.profilePicData != null}"]
+    \begin{tikzpicture}
+        \clip (0,0) circle (1.25cm);
+        \node at (0,0) {\includegraphics[width=2.5cm]{profile_pic.[(${profilePicExt})]}};
+    \end{tikzpicture} \\ [10pt]
+    [/]
+    {\Huge [(${resume.user.fullName})]} \\ [5pt]
+    \normalsize{[# th:if="${resume.profile != null and resume.profile.github != null and !resume.profile.github.isEmpty()}"]\href{[(${resume.profile.github})]}{\faGithub\ [(${resume.profile.github.replace('https://github.com/', '')})]} [# th:if="${(resume.profile.linkedin != null and !resume.profile.linkedin.isEmpty()) or (resume.profile.website != null and !resume.profile.website.isEmpty()) or (resume.user.email != null and !resume.user.email.isEmpty()) or (resume.profile.phone != null and !resume.profile.phone.isEmpty())}"] $|$ [/][/][# th:if="${resume.profile != null and resume.profile.linkedin != null and !resume.profile.linkedin.isEmpty()}"]\href{[(${resume.profile.linkedin})]}{\faLinkedin\ [(${resume.profile.linkedin.replace('https://www.linkedin.com/in/', '')})]} [# th:if="${(resume.profile.website != null and !resume.profile.website.isEmpty()) or (resume.user.email != null and !resume.user.email.isEmpty()) or (resume.profile.phone != null and !resume.profile.phone.isEmpty())}"] $|$ [/][/][# th:if="${resume.profile != null and resume.profile.website != null and !resume.profile.website.isEmpty()}"]\href{[(${resume.profile.website})]}{\faGlobe\ [(${resume.profile.website.replace('https://', '').replace('http://', '')})]} [# th:if="${(resume.user.email != null and !resume.user.email.isEmpty()) or (resume.profile.phone != null and !resume.profile.phone.isEmpty())}"] $|$ [/][/][# th:if="${resume.user.email != null and !resume.user.email.isEmpty()}"]\href{mailto:[(${resume.user.email})]}{\faEnvelope\ [(${resume.user.email})]} [# th:if="${resume.profile != null and resume.profile.phone != null and !resume.profile.phone.isEmpty()}"] $|$ [/][/][# th:if="${resume.profile != null and resume.profile.phone != null and !resume.profile.phone.isEmpty()}"]\faMobile\ [(${resume.profile.phone})][/]}
+\end{center}
+
+%----------------------------------------------------------------------------------------
+% EXPERIENCE SECTIONS
+%----------------------------------------------------------------------------------------
+
+%Interests/ Keywords/ Summary
+[# th:if="${resume.profile != null and resume.profile.bio != null and !resume.profile.bio.isEmpty()}"]
+\section{Summary}
+[(${resume.profile.bio})]
+[/]
+
+%Experience
+[# th:if="${resume.experiences != null and !resume.experiences.isEmpty()}"]
+\section{Work Experience}
+[# th:each="exp : ${resume.experiences}"]
+
+[# th:if="${exp.description != null and !exp.description.isEmpty()}"]
+\begin{joblong}{[(${exp.jobTitle})] at \textit{[(${exp.company})]}}{[(${exp.startDate})] -- [(${exp.current ? 'Present' : exp.endDate})]}
+[# th:each="line : ${#strings.arraySplit(#strings.replace(#strings.replace(#strings.replace(exp.description, '•', '@'), '·', '@'), '●', '@'), '@')}"]
+[# th:if="${!line.trim().isEmpty()}"]\item [(${line.trim()})][/]
+[/]
+\end{joblong}
+[/]
+[# th:unless="${exp.description != null and !exp.description.isEmpty()}"]
+\begin{jobshort}{[(${exp.jobTitle})] at \textit{[(${exp.company})]}}{[(${exp.startDate})] -- [(${exp.current ? 'Present' : exp.endDate})]}
+\end{jobshort}
+[/]
+
+[/]
+[/]
+  
+%Projects
+[# th:if="${resume.projects != null and !resume.projects.isEmpty()}"]
+\section{Projects}
+[# th:each="proj : ${resume.projects}"]
+\noindent\textbf{[(${proj.name})]} [# th:if="${proj.techStack != null and !proj.techStack.isEmpty()}"]$|$ \textit{[(${proj.techStack})]}[/] \hfill [# th:if="${proj.projectUrl != null and !proj.projectUrl.isEmpty()}"]\href{[(${proj.projectUrl})]}{Link}[/] \\%
+\vspace{-10pt}
+\begin{itemize}[nosep,after=\strut, leftmargin=1em, itemsep=3pt,label=--]
+[# th:each="line : ${#strings.arraySplit(#strings.replace(#strings.replace(#strings.replace(proj.description, '•', '@'), '·', '@'), '●', '@'), '@')}"]
+[# th:if="${!line.trim().isEmpty()}"]\item [(${line.trim()})][/]
+[/]
+\end{itemize}
+\vspace{10pt}
+[/]
+[/]
+
+%----------------------------------------------------------------------------------------
+%	EDUCATION
+%----------------------------------------------------------------------------------------
+[# th:if="${resume.educations != null and !resume.educations.isEmpty()}"]
+\section{Education}
+\begin{tabularx}{\linewidth}{@{}l X r@{}}	
+[# th:each="edu : ${resume.educations}"]
+[(${edu.startYear})] -- [(${edu.endYear})] & [(${edu.degree})] [# th:if="${edu.fieldOfStudy != null and !edu.fieldOfStudy.isEmpty()}"]in [(${edu.fieldOfStudy})][/] \\
+ & at \textbf{[(${edu.institution})]} & [# th:if="${edu.grade != null and !edu.grade.isEmpty()}"](Grade: [(${edu.grade})])[/] \\[4pt]
+[/]
+\end{tabularx}
+[/]
+
+%----------------------------------------------------------------------------------------
+%	PUBLICATIONS
+%----------------------------------------------------------------------------------------
+% Commented out as currently not supported in ResumeData. To be implemented if user adds publications to the model.
+% \section{Publications}
+% \begin{refsection}[citations.bib]
+% \nocite{*}
+% \printbibliography[heading=none]
+% \end{refsection}
+
+%----------------------------------------------------------------------------------------
+%	SKILLS
+%----------------------------------------------------------------------------------------
+[# th:if="${groupedSkills != null and not #maps.isEmpty(groupedSkills)}"]
+\section{Skills}
+\begin{tabularx}{\linewidth}{@{}l X@{}}
+[# th:each="entry : ${groupedSkills}"]
+\textbf{[(${entry.key})]} &  \normalsize{[# th:each="skill, iterStat : ${entry.value}"][(${skill.name})][# th:if="${skill.level != null and !skill.level.isEmpty()}"] ([(${skill.level})])[/][# th:if="${!iterStat.last}"], [/][/]}\\
+[/]
+\end{tabularx}
+[/]
+
+\vfill
+\center{\footnotesize Last updated: \today}
+
+\end{document}

@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard – OpenPortfolio</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}" />
+    <link rel="stylesheet" th:href="@{/css/dashboard.css}" />
+</head>
+
+<body>
+    <div th:replace="~{fragments/navbar :: navbar('dashboard')}"></div>
+
+    <div class="dashboard-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-avatar">
+                <!-- If the user has a profile pic, show it; otherwise show the letter circle -->
+                <div class="avatar-circle" id="sidebarAvatar">
+                    <img th:if="${profile != null and profile.profilePicUrl != null}" th:src="${profile.profilePicUrl}"
+                        th:alt="${session.fullName}" id="sidebarAvatarImg" />
+                    <span th:unless="${profile != null and profile.profilePicUrl != null}"
+                        th:text="${#strings.substring(session.fullName, 0, 1)}" id="sidebarAvatarInitial">J</span>
+                </div>
+                <div class="avatar-name" th:text="${session.fullName}">John Doe</div>
+                <div class="avatar-username">@<span th:text="${session.username}">username</span></div>
+            </div>
+            <div class="card" style="padding:0.5rem;">
+                <ul class="sidebar-menu">
+                    <li><a href="#profile" onclick="switchTab('profile')" class="active" id="tab-profile"> 👤
+                            Profile</a></li>
+                    <li><a href="#experience" onclick="switchTab('experience')" id="tab-experience"> 💼 Experience</a>
+                    </li>
+                    <li><a href="#education" onclick="switchTab('education')" id="tab-education"> 🎓 Education</a></li>
+                    <li><a href="#certifications" onclick="switchTab('certifications')" id="tab-certifications"> 🏅
+                            Certifications</a></li>
+                    <li><a href="#skills" onclick="switchTab('skills')" id="tab-skills"> ⚡ Skills</a></li>
+                    <li><a href="#projects" onclick="switchTab('projects')" id="tab-projects"> 🚀 Projects</a></li>
+                </ul>
+            </div>
+            <div style="margin-top:1rem; display:flex; flex-direction:column; gap:0.5rem;">
+                <a th:href="@{'/profile/' + ${session.username}}" class="btn btn-outline btn-sm" target="_blank">View
+                    Public Profile ↗</a>
+                <a th:href="@{'/resume/' + ${session.username}}" class="btn btn-primary btn-sm">Download Resume</a>
+                <button type="button" onclick="document.getElementById('deleteModal').style.display='flex'"
+                    style="background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);color:#ef4444;border-radius:var(--radius-sm);padding:0.45rem 1rem;font-size:0.82rem;font-weight:600;cursor:pointer;margin-top:0.5rem;transition:all 0.2s;"
+                    onmouseover="this.style.background='rgba(239,68,68,0.2)'"
+                    onmouseout="this.style.background='rgba(239,68,68,0.1)'">
+                    🗑 Delete Account
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+
+            <!-- ===== PROFILE TAB ===== -->
+            <div id="panel-profile" class="tab-panel active">
+                <div class="card">
+                    <div class="section-title">
+                        <div class="section-icon">👤</div> Edit Profile
+                    </div>
+
+                    <!-- Profile Picture Upload -->
+                    <input type="file" id="picFileInput" accept="image/*" style="display:none" />
+                    <div class="pic-upload-wrapper" onclick="document.getElementById('picFileInput').click()"
+                        title="Click to change photo">
+                        <img th:if="${profile != null and profile.profilePicUrl != null}"
+                            th:src="${profile.profilePicUrl}" th:alt="${session.fullName}" id="picPreview" />
+                        <div th:unless="${profile != null and profile.profilePicUrl != null}"
+                            class="pic-upload-placeholder" id="picPlaceholder"
+                            th:text="${#strings.substring(session.fullName, 0, 1)}">J</div>
+                        <div class="pic-upload-overlay">📷</div>
+                    </div>
+                    <div class="pic-upload-status" id="picUploadStatus">Click photo to change</div>
+
+                    <form id="profileForm" action="/dashboard/profile" method="post">
+                        <div class="form-group">
+                            <label class="form-label" for="headline">Professional Headline</label>
+                            <input class="form-control" type="text" id="headline" name="headline"
+                                th:value="${profile != null ? profile.headline : ''}"
+                                placeholder="e.g. Full Stack Developer | Java & React Enthusiast" />
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="bio">About Me</label>
+                            <textarea class="form-control" id="bio" name="bio" rows="4"
+                                th:text="${profile != null ? profile.bio : ''}"
+                                placeholder="Write a short professional bio..."></textarea>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label" for="phone">Phone</label>
+                                <input class="form-control" type="tel" id="phone" name="phone"
+                                    th:value="${profile != null ? profile.phone : ''}" placeholder="+91 9876543210" />
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="location">Location</label>
+                                <input class="form-control" type="text" id="location" name="location"
+                                    th:value="${profile != null ? profile.location : ''}" placeholder="Mumbai, India" />
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label" for="linkedin">LinkedIn URL</label>
+                                <input class="form-control" type="url" id="linkedin" name="linkedin"
+                                    th:value="${profile != null ? profile.linkedin : ''}"
+                                    placeholder="https://linkedin.com/in/..." />
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="github">GitHub URL</label>
+                                <input class="form-control" type="url" id="github" name="github"
+                                    th:value="${profile != null ? profile.github : ''}"
+                                    placeholder="https://github.com/..." />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="website">Portfolio / Website</label>
+                            <input class="form-control" type="url" id="website" name="website"
+                                th:value="${profile != null ? profile.website : ''}"
+                                placeholder="https://yoursite.com" />
+                        </div>
+
+                        <!-- Competitive Coding Profiles -->
+                        <div
+                            style="margin-top:1rem;margin-bottom:0.5rem;font-weight:600;font-size:0.85rem;color:var(--text-muted);letter-spacing:0.03em;">
+                            ⚔️ COMPETITIVE PROFILES</div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label" for="leetcode">🟡 LeetCode</label>
+                                <input class="form-control" type="url" id="leetcode" name="leetcode"
+                                    th:value="${profile != null ? profile.leetcode : ''}"
+                                    placeholder="https://leetcode.com/u/..." />
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="codeforces">🔵 Codeforces</label>
+                                <input class="form-control" type="url" id="codeforces" name="codeforces"
+                                    th:value="${profile != null ? profile.codeforces : ''}"
+                                    placeholder="https://codeforces.com/profile/..." />
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label" for="hackerrank">🟢 HackerRank</label>
+                                <input class="form-control" type="url" id="hackerrank" name="hackerrank"
+                                    th:value="${profile != null ? profile.hackerrank : ''}"
+                                    placeholder="https://hackerrank.com/profile/..." />
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="codechef">🟤 CodeChef</label>
+                                <input class="form-control" type="url" id="codechef" name="codechef"
+                                    th:value="${profile != null ? profile.codechef : ''}"
+                                    placeholder="https://codechef.com/users/..." />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="geeksforgeeks">🟩 GeeksForGeeks</label>
+                            <input class="form-control" type="url" id="geeksforgeeks" name="geeksforgeeks"
+                                th:value="${profile != null ? profile.geeksforgeeks : ''}"
+                                placeholder="https://auth.geeksforgeeks.org/user/..." />
+                        </div>
+
+                        <button type="submit" id="saveProfileBtn" class="btn btn-primary">Save Profile</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- ===== EXPERIENCE TAB ===== -->
+            <div id="panel-experience" class="tab-panel">
+                <!-- Existing Entries -->
+                <div class="card mb-2">
+                    <div class="section-title">
+                        <div class="section-icon">💼</div> Work Experience
+                    </div>
+                    <div th:if="${#lists.isEmpty(experiences)}" style="color:var(--text-muted);font-size:0.88rem;">No
+                        experience added yet.</div>
+                    <div th:each="exp : ${experiences}">
+                        <div class="entry-card">
+                            <div class="entry-info">
+                                <div class="entry-title" th:text="${exp.jobTitle}"></div>
+                                <div class="entry-sub"
+                                    th:text="${exp.company} + (${exp.location != null} ? ' · ' + ${exp.location} : '')">
+                                </div>
+                                <div class="entry-sub"
+                                    th:text="${exp.startDate} + ' → ' + (${exp.current} ? 'Present' : ${exp.endDate})">
+                                </div>
+                                <div class="entry-sub" style="white-space: pre-line; margin-top: 0.5rem;"
+                                    th:if="${exp.description}" th:text="${exp.description}">
+                                </div>
+                            </div>
+                            <div style="display:flex;gap:0.5rem;align-items:flex-start;">
+                                <button type="button" class="btn btn-outline btn-sm"
+                                    th:onclick="'toggleEditExperience(' + ${exp.id} + ')'"
+                                    style="font-size:0.75rem;padding:0.25rem 0.6rem;">✎ Edit</button>
+                                <form th:action="@{'/dashboard/experience/delete/' + ${exp.id}}" method="post">
+                                    <button type="submit" class="btn btn-danger">✕</button>
+                                </form>
+                            </div>
+                        </div>
+
+                        <!-- Edit Form (Hidden by default) -->
+                        <div th:id="'edit-experience-' + ${exp.id}" class="card"
+                            style="display:none; margin-bottom: 1rem; border: 1px dashed var(--primary);">
+                            <div class="section-title" style="font-size:0.95rem;">✎ Edit Experience</div>
+                            <form th:action="@{'/dashboard/experience/edit/' + ${exp.id}}" method="post">
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label class="form-label">Job Title *</label>
+                                        <input class="form-control" type="text" name="jobTitle"
+                                            th:value="${exp.jobTitle}" required />
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Company *</label>
+                                        <input class="form-control" type="text" name="company" th:value="${exp.company}"
+                                            required />
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label class="form-label">Start Date *</label>
+                                        <input class="form-control" type="text" name="startDate"
+                                            th:value="${exp.startDate}" required />
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">End Date <span class="end-date-req"
+                                                th:style="${exp.current ? 'display:none;' : ''}">*</span></label>
+                                        <input class="form-control" type="text" name="endDate" th:value="${exp.endDate}"
+                                            th:required="${!exp.current}" />
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Location</label>
+                                    <input class="form-control" type="text" name="location"
+                                        th:value="${exp.location}" />
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Description *</label>
+                                    <textarea class="form-control" name="description" rows="3" required
+                                        style="white-space: pre-line;" th:text="${exp.description}"></textarea>
+                                </div>
+                                <div class="form-group" style="display:flex;align-items:center;gap:0.5rem;"
+                                    th:if="${#lists.isEmpty(experiences.?[current]) or exp.current}">
+                                    <input type="checkbox" th:id="'current-exp-' + ${exp.id}" name="current"
+                                        value="true" th:checked="${exp.current}" style="accent-color:var(--primary)" />
+                                    <label th:for="'current-exp-' + ${exp.id}" class="form-label"
+                                        style="margin:0;">Currently working here</label>
+                                </div>
+                                <div style="display:flex; gap:0.5rem;">
+                                    <button type="submit" class="btn btn-primary btn-sm">Save Changes</button>
+                                    <button type="button" class="btn btn-outline btn-sm"
+                                        th:onclick="'toggleEditExperience(' + ${exp.id} + ')'">Cancel</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <!-- Add Form -->
+                <div class="card">
+                    <div class="section-title" style="font-size:0.95rem;">+ Add Experience</div>
+                    <form action="/dashboard/experience/add" method="post">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Job Title *</label>
+                                <input class="form-control" type="text" name="jobTitle" placeholder="Software Engineer"
+                                    required />
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Company *</label>
+                                <input class="form-control" type="text" name="company" placeholder="Google" required />
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Start Date *</label>
+                                <input class="form-control" type="text" name="startDate" placeholder="Jan 2023"
+                                    required />
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">End Date <span class="end-date-req">*</span></label>
+                                <input class="form-control" type="text" name="endDate"
+                                    placeholder="Dec 2024 (or leave blank if current)" required />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Location</label>
+                            <input class="form-control" type="text" name="location" placeholder="Bangalore, India" />
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Description *</label>
+                            <textarea class="form-control" name="description" rows="3"
+                                placeholder="What did you accomplish?" required
+                                style="white-space: pre-line;"></textarea>
+                        </div>
+                        <div class="form-group" style="display:flex;align-items:center;gap:0.5rem;"
+                            th:if="${#lists.isEmpty(experiences.?[current])}">
+                            <input type="checkbox" id="current-exp" name="current" value="true"
+                                style="accent-color:var(--primary)" />
+                            <label for="current-exp" class="form-label" style="margin:0;">Currently working here</label>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-sm">Add Experience</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- ===== EDUCATION TAB ===== -->
+            <div id="panel-education" class="tab-panel">
+                <div class="card mb-2">
+                    <div class="section-title">
+                        <div class="section-icon">🎓</div> Education
+                    </div>
+                    <div th:if="${#lists.isEmpty(educations)}" style="color:var(--text-muted);font-size:0.88rem;">No
+                        education added yet.</div>
+                    <div th:each="edu : ${educations}">
+                        <div class="entry-card">
+                            <div class="entry-info">
+                                <div class="entry-title"
+                                    th:text="${edu.degree} + (${edu.fieldOfStudy != null} ? ' in ' + ${edu.fieldOfStudy} : '')">
+                                </div>
+                                <div class="entry-sub" th:text="${edu.institution}"></div>
+                                <div class="entry-sub"
+                                    th:text="${edu.startYear} + ' – ' + ${edu.endYear} + (${edu.grade != null} ? ' · ' + ${edu.grade} : '')">
+                                </div>
+                                <div class="entry-sub" style="white-space: pre-line; margin-top: 0.5rem;"
+                                    th:if="${edu.description}" th:text="${edu.description}">
+                                </div>
+                            </div>
+                            <div style="display:flex;gap:0.5rem;align-items:flex-start;">
+                                <button type="button" class="btn btn-outline btn-sm"
+                                    th:onclick="'toggleEditEducation(' + ${edu.id} + ')'"
+                                    style="font-size:0.75rem;padding:0.25rem 0.6rem;">✎ Edit</button>
+                                <form th:action="@{'/dashboard/education/delete/' + ${edu.id}}" method="post">
+                                    <button type="submit" class="btn btn-danger">✕</button>
+                                </form>
+                            </div>
+                        </div>
+
+                        <!-- Edit Form (Hidden by default) -->
+                        <div th:id="'edit-education-' + ${edu.id}" class="card"
+                            style="display:none; margin-bottom: 1rem; border: 1px dashed var(--primary);">
+                            <div class="section-title" style="font-size:0.95rem;">✎ Edit Education</div>
+                            <form th:action="@{'/dashboard/education/edit/' + ${edu.id}}" method="post">
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label class="form-label">Degree *</label>
+                                        <input class="form-control" type="text" name="degree" th:value="${edu.degree}"
+                                            required />
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Institution *</label>
+                                        <input class="form-control" type="text" name="institution"
+                                            th:value="${edu.institution}" required />
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label class="form-label">Field of Study</label>
+                                        <input class="form-control" type="text" name="fieldOfStudy"
+                                            th:value="${edu.fieldOfStudy}" />
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Grade / CGPA</label>
+                                        <input class="form-control" type="text" name="grade" th:value="${edu.grade}" />
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label class="form-label">Start Year</label>
+                                        <input class="form-control" type="text" name="startYear"
+                                            th:value="${edu.startYear}" />
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">End Year</label>
+                                        <input class="form-control" type="text" name="endYear"
+                                            th:value="${edu.endYear}" />
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Description</label>
+                                    <textarea class="form-control" name="description" rows="3"
+                                        style="white-space: pre-line;" th:text="${edu.description}"></textarea>
+                                </div>
+                                <div style="display:flex; gap:0.5rem;">
+                                    <button type="submit" class="btn btn-primary btn-sm">Save Changes</button>
+                                    <button type="button" class="btn btn-outline btn-sm"
+                                        th:onclick="'toggleEditEducation(' + ${edu.id} + ')'">Cancel</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="section-title" style="font-size:0.95rem;">+ Add Education</div>
+                    <form action="/dashboard/education/add" method="post">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Degree *</label>
+                                <input class="form-control" type="text" name="degree" placeholder="B.Tech / BCA / MBA"
+                                    required />
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Institution *</label>
+                                <input class="form-control" type="text" name="institution" placeholder="IIT Bombay"
+                                    required />
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Field of Study</label>
+                                <input class="form-control" type="text" name="fieldOfStudy"
+                                    placeholder="Computer Science" />
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Grade / CGPA</label>
+                                <input class="form-control" type="text" name="grade" placeholder="9.2 CGPA / 85%" />
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Start Year</label>
+                                <input class="form-control" type="text" name="startYear" placeholder="2020" />
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">End Year</label>
+                                <input class="form-control" type="text" name="endYear" placeholder="2024" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Description</label>
+                            <textarea class="form-control" name="description" rows="3"
+                                placeholder="What did you study/accomplish?" style="white-space: pre-line;"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-sm">Add Education</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- ===== CERTIFICATIONS TAB ===== -->
+            <div id="panel-certifications" class="tab-panel">
+                <div class="card mb-2">
+                    <div class="section-title">
+                        <div class="section-icon">🏅</div> Certifications
+                    </div>
+                    <div th:if="${#lists.isEmpty(certifications)}" style="color:var(--text-muted);font-size:0.88rem;">No
+                        certifications added yet.</div>
+                    <div th:each="cert : ${certifications}" class="entry-card">
+                        <div class="entry-info">
+                            <div class="entry-title" th:text="${cert.name}"></div>
+                            <div class="entry-sub" th:text="${cert.issuer}"></div>
+                            <div class="entry-sub"
+                                th:text="${cert.issueDate} + (${cert.expiryDate != null} ? ' – ' + ${cert.expiryDate} : '')">
+                            </div>
+                            <div style="display:flex;gap:0.75rem;margin-top:0.35rem;align-items:center;flex-wrap:wrap;">
+                                <span th:if="${cert.credentialId}" th:text="'ID: ' + ${cert.credentialId}"
+                                    style="font-size:0.78rem;color:var(--text-muted);"></span>
+                                <a th:if="${cert.credentialUrl}" th:href="${cert.credentialUrl}" target="_blank"
+                                    style="font-size:0.78rem;color:var(--primary);">🔗 Verify</a>
+                                <!-- View uploaded certificate file -->
+                                <a th:if="${cert.certificateFileUrl}" th:href="${cert.certificateFileUrl}"
+                                    target="_blank" data-cert-file="true"
+                                    style="font-size:0.78rem;color:#43e6fc;display:inline-flex;align-items:center;gap:0.25rem;">📄
+                                    View Certificate</a>
+                                <!-- Upload / replace certificate file -->
+                                <label th:attr="for='certFile_' + ${cert.id}"
+                                    style="font-size:0.78rem;color:var(--text-muted);cursor:pointer;display:inline-flex;align-items:center;gap:0.25rem;"
+                                    th:title="${cert.certificateFileUrl != null ? 'Replace file' : 'Attach file'}">📎
+                                    <span
+                                        th:text="${cert.certificateFileUrl != null ? 'Replace' : 'Attach'}"></span></label>
+                                <input type="file" th:id="'certFile_' + ${cert.id}" accept="image/*,application/pdf"
+                                    style="display:none" th:attr="onchange='uploadCertFile(this,' + ${cert.id} + ')'" />
+                                <span th:id="'certFileStatus_' + ${cert.id}"
+                                    style="font-size:0.75rem;color:var(--text-muted);"></span>
+                            </div>
+                        </div>
+                        <form th:action="@{'/dashboard/certification/delete/' + ${cert.id}}" method="post">
+                            <button type="submit" class="btn btn-danger">✕</button>
+                        </form>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="section-title" style="font-size:0.95rem;">+ Add Certification</div>
+                    <form action="/dashboard/certification/add" method="post">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Certification Name *</label>
+                                <input class="form-control" type="text" name="name"
+                                    placeholder="AWS Certified Developer" required />
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Issuing Organisation *</label>
+                                <input class="form-control" type="text" name="issuer" placeholder="Amazon Web Services"
+                                    required />
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Issue Date</label>
+                                <input class="form-control" type="text" name="issueDate" placeholder="Jan 2024" />
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Expiry Date</label>
+                                <input class="form-control" type="text" name="expiryDate"
+                                    placeholder="Jan 2027 (optional)" />
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Credential ID</label>
+                                <input class="form-control" type="text" name="credentialId" placeholder="ABC123..." />
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Credential URL</label>
+                                <input class="form-control" type="url" name="credentialUrl"
+                                    placeholder="https://credentials.example.com/..." />
+                            </div>
+                        </div>
+                        <!-- Certificate File Upload -->
+                        <div class="form-group">
+                            <label class="form-label">Certificate File <span
+                                    style="color:var(--text-subtle);font-size:0.8rem;">(image or PDF,
+                                    optional)</span></label>
+                            <div style="display:flex;align-items:center;gap:0.75rem;flex-wrap:wrap;">
+                                <label for="newCertFile"
+                                    style="display:inline-flex;align-items:center;gap:0.4rem;padding:0.45rem 1rem;background:rgba(108,99,255,0.1);border:1px solid rgba(108,99,255,0.3);border-radius:50px;font-size:0.83rem;color:var(--primary);cursor:pointer;transition:background 0.2s;"
+                                    onmouseover="this.style.background='rgba(108,99,255,0.2)'"
+                                    onmouseout="this.style.background='rgba(108,99,255,0.1)'">
+                                    📎 Choose File
+                                </label>
+                                <input type="file" id="newCertFile" accept="image/*,application/pdf"
+                                    style="display:none"
+                                    onchange="document.getElementById('newCertFileLabel').textContent = this.files[0] ? this.files[0].name : 'No file chosen'" />
+                                <span id="newCertFileLabel" style="font-size:0.83rem;color:var(--text-muted);">No file
+                                    chosen</span>
+                            </div>
+                        </div>
+                        <div style="display:flex;align-items:center;gap:0.75rem;flex-wrap:wrap;">
+                            <button type="submit" class="btn btn-primary btn-sm" id="addCertBtn">Add
+                                Certification</button>
+                            <span id="addCertStatus" style="font-size:0.82rem;color:var(--text-muted);"></span>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- ===== SKILLS TAB ===== -->
+            <div id="panel-skills" class="tab-panel">
+                <div class="card mb-2">
+                    <div class="section-title">
+                        <div class="section-icon">⚡</div> Skills
+                    </div>
+                    <div th:if="${#lists.isEmpty(skills)}" style="color:var(--text-muted);font-size:0.88rem;">No skills
+                        added yet.</div>
+                    <div style="display:flex;flex-wrap:wrap;gap:0.5rem;">
+                        <div th:each="skill : ${skills}"
+                            style="display:flex;align-items:center;gap:0.4rem;background:var(--bg-card);border:1px solid var(--border);border-radius:50px;padding:0.3rem 0.8rem;">
+                            <span th:text="${skill.name}" style="font-size:0.85rem;font-weight:500;"></span>
+                            <span th:if="${skill.type != null and !skill.type.isEmpty()}"
+                                th:text="'(' + ${skill.type} + ')'"
+                                style="font-size:0.75rem;color:var(--primary);"></span>
+                            <span th:if="${skill.level != null}" th:text="${skill.level}"
+                                style="font-size:0.72rem;color:var(--text-muted);"></span>
+                            <form th:action="@{'/dashboard/skill/delete/' + ${skill.id}}" method="post"
+                                style="display:inline;">
+                                <button type="submit"
+                                    style="background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:0.75rem;padding:0 0.2rem;">✕</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="section-title" style="font-size:0.95rem;">+ Add Skill</div>
+                    <form action="/dashboard/skill/add" method="post"
+                        style="display:flex;gap:0.75rem;flex-wrap:wrap;align-items:flex-end;">
+
+                        <div class="form-group" style="margin:0;flex:1;min-width:180px;">
+                            <label class="form-label">Type *</label>
+                            <div class="custom-select" id="skillTypeDropdown">
+                                <input class="form-control" type="text" id="skillTypeInput" name="type"
+                                    placeholder="Select or type..." autocomplete="off" onfocus="openSkillTypeDropdown()"
+                                    oninput="filterSkillTypes()" onclick="openSkillTypeDropdown()" required />
+                                <div class="custom-select-options" id="skillTypeOptions"
+                                    style="max-height: 250px; overflow-y: auto;">
+                                    <div class="custom-select-option"
+                                        onclick="selectSkillType('Programming Languages')">Programming Languages</div>
+                                    <div class="custom-select-option"
+                                        onclick="selectSkillType('Frameworks &amp; Libraries')">Frameworks &amp;
+                                        Libraries</div>
+                                    <div class="custom-select-option"
+                                        onclick="selectSkillType('Web Development (front + back)')">Web Development
+                                        (front + back)</div>
+                                    <div class="custom-select-option"
+                                        onclick="selectSkillType('Databases &amp; Data Storage')">Databases &amp; Data
+                                        Storage</div>
+                                    <div class="custom-select-option"
+                                        onclick="selectSkillType('Cloud &amp; DevOps / Infrastructure')">Cloud &amp;
+                                        DevOps / Infrastructure</div>
+                                    <div class="custom-select-option"
+                                        onclick="selectSkillType('Data Science, ML &amp; Analytics')">Data Science, ML
+                                        &amp; Analytics</div>
+                                    <div class="custom-select-option"
+                                        onclick="selectSkillType('Tools, IDEs &amp; Productivity Software')">Tools, IDEs
+                                        &amp; Productivity Software</div>
+                                    <div class="custom-select-option" onclick="selectSkillType('UI / UX &amp; Design')">
+                                        UI / UX &amp; Design</div>
+                                    <div class="custom-select-option"
+                                        onclick="selectSkillType('Mobile &amp; Cross-Platform')">Mobile &amp;
+                                        Cross-Platform</div>
+                                    <div class="custom-select-option"
+                                        onclick="selectSkillType('Operating Systems &amp; System Software')">Operating
+                                        Systems &amp; System Software</div>
+                                    <div class="custom-select-option"
+                                        onclick="selectSkillType('Cybersecurity &amp; Networking')">Cybersecurity &amp;
+                                        Networking</div>
+                                    <div class="custom-select-option"
+                                        onclick="selectSkillType('Testing &amp; Quality Assurance')">Testing &amp;
+                                        Quality Assurance</div>
+                                    <div class="custom-select-option"
+                                        onclick="selectSkillType('Project Management &amp; Collaboration')">Project
+                                        Management &amp; Collaboration</div>
+                                    <div class="custom-select-option"
+                                        onclick="selectSkillType('Embedded Systems, IoT &amp; Hardware')">Embedded
+                                        Systems, IoT &amp; Hardware</div>
+                                    <div class="custom-select-option"
+                                        onclick="selectSkillType('Soft / Professional Skills')">Soft / Professional
+                                        Skills</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group" style="margin:0;flex:1;min-width:180px;">
+                            <label class="form-label">Skill Name *</label>
+                            <div class="custom-select" id="skillNameDropdown">
+                                <input class="form-control" type="text" id="skillNameInput" name="name"
+                                    placeholder="Select or type..." autocomplete="off" onfocus="openSkillNameDropdown()"
+                                    oninput="filterSkillNames()" onclick="openSkillNameDropdown()" required />
+                                <div class="custom-select-options" id="skillNameOptions"
+                                    style="max-height: 250px; overflow-y: auto;">
+                                    <div class="custom-select-option"
+                                        style="color: var(--text-muted); cursor: default; user-select: none;">Please
+                                        select a Type first</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group" style="margin:0;width:160px;">
+                            <label class="form-label">Level</label>
+                            <input type="hidden" name="level" id="skillLevelInput" value="">
+                            <div class="custom-select" id="skillLevelDropdown">
+                                <div class="custom-select-trigger" onclick="toggleSkillDropdown()">
+                                    <span id="skillLevelLabel">Select level</span>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="#8b8ba7"
+                                        viewBox="0 0 16 16">
+                                        <path
+                                            d="M7.247 11.14L2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z" />
+                                    </svg>
+                                </div>
+                                <div class="custom-select-options" id="skillLevelOptions">
+                                    <div class="custom-select-option" onclick="selectSkillLevel('', 'Select level')">
+                                        Select level</div>
+                                    <div class="custom-select-option"
+                                        onclick="selectSkillLevel('Beginner', 'Beginner')">Beginner</div>
+                                    <div class="custom-select-option"
+                                        onclick="selectSkillLevel('Intermediate', 'Intermediate')">Intermediate</div>
+                                    <div class="custom-select-option" onclick="selectSkillLevel('Expert', 'Expert')">
+                                        Expert</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group" style="margin:0;">
+                            <button type="submit" class="btn btn-primary btn-sm">Add Skill</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- ===== PROJECTS TAB ===== -->
+            <div id="panel-projects" class="tab-panel">
+                <div class="card mb-2">
+                    <div class="section-title">
+                        <div class="section-icon">🚀</div> Projects
+                    </div>
+                    <div th:if="${#lists.isEmpty(projects)}" style="color:var(--text-muted);font-size:0.88rem;">No
+                        projects added yet.</div>
+                    <div th:each="proj : ${projects}" class="entry-card">
+                        <div class="entry-info">
+                            <div class="entry-title" th:text="${proj.name}"></div>
+                            <div class="entry-sub" th:text="${proj.techStack}"></div>
+                            <div class="entry-sub" th:if="${proj.description}"
+                                style="white-space: pre-line; margin-top: 0.5rem;" th:text="${proj.description}"></div>
+                            <div style="display:flex;gap:0.75rem;margin-top:0.25rem;">
+                                <a th:if="${proj.projectUrl}" th:href="${proj.projectUrl}" target="_blank"
+                                    class="profile-link-btn">🔗 Live</a>
+                                <a th:if="${proj.githubUrl}" th:href="${proj.githubUrl}" target="_blank"
+                                    class="profile-link-btn">⌥ GitHub</a>
+                            </div>
+                            <div style="display:flex;gap:0.5rem;align-items:flex-start; margin-top: 0.5rem;">
+                                <button type="button" class="btn btn-outline btn-sm"
+                                    th:onclick="'toggleEditProject(' + ${proj.id} + ')'"
+                                    style="font-size:0.75rem;padding:0.25rem 0.6rem;">✎ Edit</button>
+                                <form th:action="@{'/dashboard/project/delete/' + ${proj.id}}" method="post">
+                                    <button type="submit" class="btn btn-danger">✕</button>
+                                </form>
+                            </div>
+                        </div>
+
+                        <!-- Edit Form (Hidden by default) -->
+                        <div th:id="'edit-project-' + ${proj.id}" class="card"
+                            style="display:none; margin-bottom: 1rem; border: 1px dashed var(--primary);">
+                            <div class="section-title" style="font-size:0.95rem;">✎ Edit Project</div>
+                            <form th:action="@{'/dashboard/project/edit/' + ${proj.id}}" method="post">
+                                <div class="form-group">
+                                    <label class="form-label">Project Name *</label>
+                                    <input class="form-control" type="text" name="name" th:value="${proj.name}"
+                                        required />
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Tech Stack</label>
+                                    <input class="form-control" type="text" name="techStack"
+                                        th:value="${proj.techStack}" />
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Description *</label>
+                                    <textarea class="form-control" name="description" rows="3" required
+                                        style="white-space: pre-line;" th:text="${proj.description}"></textarea>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label class="form-label">Live URL</label>
+                                        <input class="form-control" type="url" name="projectUrl"
+                                            th:value="${proj.projectUrl}" />
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">GitHub URL</label>
+                                        <input class="form-control" type="url" name="githubUrl"
+                                            th:value="${proj.githubUrl}" />
+                                    </div>
+                                </div>
+                                <div style="display:flex; gap:0.5rem;">
+                                    <button type="submit" class="btn btn-primary btn-sm">Save Changes</button>
+                                    <button type="button" class="btn btn-outline btn-sm"
+                                        th:onclick="'toggleEditProject(' + ${proj.id} + ')'">Cancel</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="section-title" style="font-size:0.95rem;">+ Add Project</div>
+                    <form action="/dashboard/project/add" method="post">
+                        <div class="form-group">
+                            <label class="form-label">Project Name *</label>
+                            <input class="form-control" type="text" name="name" placeholder="E-Commerce Platform"
+                                required />
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Tech Stack</label>
+                            <input class="form-control" type="text" name="techStack"
+                                placeholder="Spring Boot, React, PostgreSQL" />
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Description *</label>
+                            <textarea class="form-control" name="description" rows="3" required
+                                placeholder="What does this project do?"></textarea>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Live URL</label>
+                                <input class="form-control" type="url" name="projectUrl"
+                                    placeholder="https://myproject.com" />
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">GitHub URL</label>
+                                <input class="form-control" type="url" name="githubUrl"
+                                    placeholder="https://github.com/..." />
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-sm">Add Project</button>
+                    </form>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <script th:src="@{/js/dashboard.js}"></script>
+
+    <!-- Delete Account Confirmation Modal -->
+    <div id="deleteModal"
+        style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:1000;align-items:center;justify-content:center;backdrop-filter:blur(4px);">
+        <div
+            style="background:var(--bg-card);border:1px solid rgba(239,68,68,0.4);border-radius:var(--radius);padding:2rem;max-width:420px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,0.5);">
+            <div style="font-size:2rem;text-align:center;margin-bottom:0.5rem;">⚠️</div>
+            <h3 style="text-align:center;font-family:'Outfit',sans-serif;font-size:1.2rem;margin-bottom:0.5rem;">Delete
+                Account?</h3>
+            <p
+                style="text-align:center;color:var(--text-muted);font-size:0.88rem;line-height:1.6;margin-bottom:1.5rem;">
+                This will permanently delete your account, profile, experiences, education, skills, and projects.
+                <strong style="color:#ef4444;">This action cannot be undone.</strong>
+            </p>
+            <div style="display:flex;gap:0.75rem;">
+                <button type="button" onclick="document.getElementById('deleteModal').style.display='none'"
+                    style="flex:1;padding:0.65rem;border:1px solid var(--border);background:transparent;color:var(--text-muted);border-radius:var(--radius-sm);cursor:pointer;font-size:0.88rem;">
+                    Cancel
+                </button>
+                <form action="/dashboard/account/delete" method="post" style="flex:1;">
+                    <button type="submit"
+                        style="width:100%;padding:0.65rem;background:#ef4444;border:none;color:#fff;border-radius:var(--radius-sm);cursor:pointer;font-size:0.88rem;font-weight:700;">
+                        Yes, Delete Everything
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>

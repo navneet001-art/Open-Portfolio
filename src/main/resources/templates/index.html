@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>OpenPortfolio – Build Your Professional Profile</title>
+    <meta name="description"
+        content="Create a professional profile and downloadable resume. Recruiters can find you instantly by username." />
+    <link rel="stylesheet" th:href="@{/css/main.css}" />
+</head>
+
+<body>
+
+    <div th:replace="~{fragments/navbar :: navbar('home')}"></div>
+
+    <!-- HERO -->
+    <section class="hero">
+        <div class="hero-content">
+            <div class="hero-eyebrow">✦ Your career, one link away</div>
+            <h1 class="hero-title">Your Professional<br />Profile &amp; Resume</h1>
+            <p class="hero-subtitle">
+                Create a stunning public profile. Share your experience, skills, and projects.
+                Let recruiters find you by searching your username.
+            </p>
+
+            <!-- Alert for not found -->
+            <div th:if="${error}" class="alert alert-danger" style="max-width:480px;margin:0 auto 1.5rem;">
+                <span th:text="${error}"></span>
+            </div>
+
+            <!-- Search Box -->
+            <form class="hero-search" action="/search" method="get">
+                <input type="text" name="username" id="username-search" placeholder="Search by username..." required
+                    autocomplete="off" />
+                <button type="submit" class="btn btn-primary">Search →</button>
+            </form>
+
+            <div class="hero-stats">
+                <div>
+                    <div class="hero-stat-value">3</div>
+                    <div class="hero-stat-label">Resume Templates</div>
+                </div>
+                <div>
+                    <div class="hero-stat-value">100%</div>
+                    <div class="hero-stat-label">Free to Use</div>
+                </div>
+                <div>
+                    <div class="hero-stat-value">PDF</div>
+                    <div class="hero-stat-label">Instant Download</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FEATURES -->
+    <section class="features">
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">🌐</div>
+                <div class="feature-title">Public Profile URL</div>
+                <div class="feature-desc">Every user gets openportfolio.app/profile/username – shareable anywhere.</div>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🔍</div>
+                <div class="feature-title">Search by Username</div>
+                <div class="feature-desc">Recruiters & peers can find you instantly without creating an account.</div>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">📄</div>
+                <div class="feature-title">PDF Resume Download</div>
+                <div class="feature-desc">Choose from 3 professional templates and download a polished PDF resume.</div>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">💼</div>
+                <div class="feature-title">Full Work History</div>
+                <div class="feature-desc">Showcase experience, education, projects, and skills in one place.</div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <span>© 2026 OpenPortfolio · Built with Spring Boot</span>
+    </footer>
+
+</body>
+
+</html>

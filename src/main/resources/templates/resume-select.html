@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Download Resume – OpenPortfolio</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}" />
+    <link rel="stylesheet" th:href="@{/css/resume-select.css}" />
+</head>
+
+<body>
+    <div th:replace="~{fragments/navbar :: navbar('')}"></div>
+
+    <div class="container page-wrapper">
+        <div style="text-align:center;margin-bottom:2rem;">
+            <h1 style="font-family:'Outfit',sans-serif;font-size:2rem;font-weight:800;margin-bottom:0.5rem;">Choose a
+                Resume Template</h1>
+            <p style="color:var(--text-muted);">
+                Generating resume for
+                <strong th:text="${resume.user.fullName}" style="color:var(--text);"></strong>
+                (<span th:text="'@' + ${resume.user.username}" style="color:var(--primary);"></span>)
+            </p>
+        </div>
+
+        <div class="template-grid">
+            <!-- Template 1: Classic -->
+            <div class="template-card">
+                <div class="template-preview">
+                    <div class="preview-page classic-preview">
+                        <div class="preview-header"></div>
+                        <div class="preview-line" style="width:90%;background:#ccc;"></div>
+                        <div class="preview-line" style="width:70%;background:#ccc;"></div>
+                        <div class="preview-line" style="width:80%;background:#eee;margin-top:10px;"></div>
+                        <div class="preview-line" style="width:60%;background:#eee;"></div>
+                    </div>
+                </div>
+                <div class="template-body">
+                    <div class="template-name">Classic</div>
+                    <div class="template-desc">Clean, professional. Perfect for traditional industries.</div>
+                    <a th:href="@{'/resume/' + ${resume.user.username} + '/download?template=1'}"
+                        class="btn btn-primary w-100" style="justify-content:center;">
+                        ⬇ Download PDF
+                    </a>
+                </div>
+            </div>
+
+            <!-- Template 2: Modern -->
+            <div class="template-card">
+                <div class="template-preview">
+                    <div class="preview-page modern-preview">
+                        <div class="preview-header"></div>
+                        <div class="preview-line" style="width:90%;background:#c5c0f5;"></div>
+                        <div class="preview-line" style="width:65%;background:#c5c0f5;"></div>
+                        <div class="preview-line" style="width:80%;background:#ede9ff;margin-top:10px;"></div>
+                        <div class="preview-line" style="width:55%;background:#ede9ff;"></div>
+                    </div>
+                </div>
+                <div class="template-body">
+                    <div class="template-name">Modern</div>
+                    <div class="template-desc">Vibrant purple accent. Great for tech &amp; design roles.</div>
+                    <a th:href="@{'/resume/' + ${resume.user.username} + '/download?template=2'}"
+                        class="btn btn-primary w-100" style="justify-content:center;">
+                        ⬇ Download PDF
+                    </a>
+                </div>
+            </div>
+
+            <!-- Template 3: Creative -->
+            <div class="template-card">
+                <div class="template-preview">
+                    <div class="preview-page creative-preview"
+                        style="background:linear-gradient(135deg,#1a1a2e,#16213e);">
+                        <div class="preview-header"></div>
+                        <div class="preview-line" style="width:90%;background:rgba(255,255,255,0.2);"></div>
+                        <div class="preview-line" style="width:70%;background:rgba(255,255,255,0.15);"></div>
+                        <div class="preview-line" style="width:80%;background:rgba(255,107,107,0.3);margin-top:10px;">
+                        </div>
+                        <div class="preview-line" style="width:55%;background:rgba(255,107,107,0.2);"></div>
+                    </div>
+                </div>
+                <div class="template-body">
+                    <div class="template-name">Creative</div>
+                    <div class="template-desc">Bold gradient header. Stand out among applicants.</div>
+                    <a th:href="@{'/resume/' + ${resume.user.username} + '/download?template=3'}"
+                        class="btn btn-primary w-100" style="justify-content:center;">
+                        ⬇ Download PDF
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div style="text-align:center;margin-top:2rem;">
+            <a th:href="@{'/profile/' + ${resume.user.username}}" class="btn btn-outline">← Back to Profile</a>
+        </div>
+    </div>
+
+    <footer class="footer">© 2026 OpenPortfolio</footer>
+</body>
+
+</html>

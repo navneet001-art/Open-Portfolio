@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:fragment="navbar(page)">
+<head></head>
+<body>
+<nav class="navbar">
+    <a href="/" class="navbar-brand">
+        Open<span class="logo-dot">Portfolio</span>
+    </a>
+    <div class="navbar-links">
+        <a href="/" th:class="${page == 'home'} ? 'text-primary' : ''">Home</a>
+        <!-- Not logged in -->
+        <div th:if="${session.userId == null}">
+            <a href="/login">Login</a>
+            <a href="/register" class="btn-nav">Get Started</a>
+        </div>
+        <!-- Logged in -->
+        <div th:if="${session.userId != null}" style="display:flex;align-items:center;gap:0.75rem;">
+            <a href="/dashboard">Dashboard</a>
+            <a th:href="@{'/profile/' + ${session.username}}" class="text-muted" style="font-size:0.85rem;">
+                @<span th:text="${session.username}">username</span>
+            </a>
+            <form action="/logout" method="post" style="display:inline;">
+                <button type="submit" class="btn btn-outline btn-sm">Logout</button>
+            </form>
+        </div>
+    </div>
+</nav>
+</body>
+</html>

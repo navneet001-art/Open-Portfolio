@@ -1,0 +1,121 @@
+.template-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1.5rem;
+    margin-top: 2rem;
+}
+
+.template-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    transition: var(--transition);
+    cursor: pointer;
+}
+
+.template-card:hover {
+    border-color: var(--primary);
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-glow);
+}
+
+.template-preview {
+    height: 180px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+    background: linear-gradient(135deg, rgba(108, 99, 255, 0.1), rgba(67, 230, 252, 0.05));
+}
+
+.template-body {
+    padding: 1.2rem;
+}
+
+.template-name {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 700;
+    font-size: 1rem;
+    margin-bottom: 0.3rem;
+}
+
+.template-desc {
+    color: var(--text-muted);
+    font-size: 0.82rem;
+    margin-bottom: 1rem;
+}
+
+.preview-page {
+    background: #fff;
+    border-radius: 4px;
+    width: 80%;
+    height: 140px;
+    margin: 20px auto;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    padding: 10px;
+}
+
+.preview-line {
+    height: 6px;
+    border-radius: 3px;
+    margin-bottom: 6px;
+}
+
+.classic-preview .preview-header {
+    height: 28px;
+    background: #2c3e50;
+    border-radius: 2px;
+    margin-bottom: 8px;
+}
+
+.classic-preview .preview-line {
+    background: #ddd;
+}
+
+.classic-preview .preview-line:nth-child(2) {
+    width: 70%;
+}
+
+.modern-preview .preview-header {
+    height: 28px;
+    background: linear-gradient(135deg, #6C63FF, #8b5cf6);
+    border-radius: 2px;
+    margin-bottom: 8px;
+}
+
+.modern-preview .preview-line {
+    background: #e8e5ff;
+}
+
+.modern-preview .preview-line:nth-child(2) {
+    width: 60%;
+}
+
+.creative-preview {
+    background: linear-gradient(135deg, #1a1a2e, #16213e);
+}
+
+.creative-preview .preview-header {
+    height: 28px;
+    background: linear-gradient(135deg, #FF6B6B, #ffc146);
+    border-radius: 2px;
+    margin-bottom: 8px;
+}
+
+.creative-preview .preview-line {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.user-info-bar {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.2rem 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 0;
+}

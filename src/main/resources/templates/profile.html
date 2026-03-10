@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title th:text="${resume.user.fullName} + ' – OpenPortfolio'">Profile – OpenPortfolio</title>
+    <meta name="description"
+        th:content="${resume.profile != null ? resume.profile.headline : resume.user.fullName + ' profile'}" />
+    <link rel="stylesheet" th:href="@{/css/main.css}" />
+    <link rel="stylesheet" th:href="@{/css/profile.css}" />
+</head>
+
+<body>
+    <div th:replace="~{fragments/navbar :: navbar('')}"></div>
+
+    <div class="container page-wrapper">
+
+        <!-- Profile Hero -->
+        <div class="profile-hero">
+            <div class="profile-top">
+                <!-- Show photo if uploaded, otherwise show initial -->
+                <div class="profile-avatar" th:if="${resume.profile != null and resume.profile.profilePicUrl != null}"
+                    style="background:none;padding:0;overflow:hidden;">
+                    <img th:src="${resume.profile.profilePicUrl}" th:alt="${resume.user.fullName}"
+                        style="width:90px;height:90px;border-radius:50%;object-fit:cover;display:block;" />
+                </div>
+                <div class="profile-avatar"
+                    th:unless="${resume.profile != null and resume.profile.profilePicUrl != null}"
+                    th:text="${#strings.substring(resume.user.fullName, 0, 1)}">J</div>
+
+                <div style="flex:1;">
+                    <div class="profile-name" th:text="${resume.user.fullName}">John Doe</div>
+                    <div class="profile-headline" th:if="${resume.profile != null and resume.profile.headline != null}"
+                        th:text="${resume.profile.headline}">Developer</div>
+                    <div class="profile-meta">
+                        <span class="profile-meta-item">
+                            🔗 <span th:text="'@' + ${resume.user.username}" style="color:var(--primary);"></span>
+                        </span>
+                    </div>
+                    <div class="profile-links">
+                        <a th:if="${resume.profile != null and not #strings.isEmpty(resume.profile.linkedin)}"
+                            th:href="${resume.profile.linkedin}" target="_blank" class="profile-link">in LinkedIn</a>
+                        <a th:if="${resume.profile != null and not #strings.isEmpty(resume.profile.github)}"
+                            th:href="${resume.profile.github}" target="_blank" class="profile-link">⌥ GitHub</a>
+                        <a th:if="${resume.profile != null and not #strings.isEmpty(resume.profile.website)}"
+                            th:href="${resume.profile.website}" target="_blank" class="profile-link">🌐 Website</a>
+                        <!-- Competitive profiles -->
+                        <a th:if="${resume.profile != null and not #strings.isEmpty(resume.profile.leetcode)}"
+                            th:href="${resume.profile.leetcode}" target="_blank" class="profile-link">🟡 LeetCode</a>
+                        <a th:if="${resume.profile != null and not #strings.isEmpty(resume.profile.codeforces)}"
+                            th:href="${resume.profile.codeforces}" target="_blank" class="profile-link">🔵
+                            Codeforces</a>
+                        <a th:if="${resume.profile != null and not #strings.isEmpty(resume.profile.hackerrank)}"
+                            th:href="${resume.profile.hackerrank}" target="_blank" class="profile-link">🟢
+                            HackerRank</a>
+                        <a th:if="${resume.profile != null and not #strings.isEmpty(resume.profile.codechef)}"
+                            th:href="${resume.profile.codechef}" target="_blank" class="profile-link">🟤 CodeChef</a>
+                        <a th:if="${resume.profile != null and not #strings.isEmpty(resume.profile.geeksforgeeks)}"
+                            th:href="${resume.profile.geeksforgeeks}" target="_blank" class="profile-link">🟩 GFG</a>
+                        <a th:href="@{'/resume/' + ${resume.user.username}}" class="btn btn-primary btn-sm">📄 Download
+                            Resume</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="content-grid">
+            <!-- Left: Main content -->
+            <div>
+                <!-- About -->
+                <div class="profile-section" th:if="${resume.profile != null and resume.profile.bio != null}">
+                    <div class="section-title">
+                        <div class="section-icon">💬</div> About
+                    </div>
+                    <p style="color:var(--text-muted);line-height:1.8;" th:text="${resume.profile.bio}"></p>
+                </div>
+
+                <!-- Experience -->
+                <div class="profile-section" th:if="${!#lists.isEmpty(resume.experiences)}">
+                    <div class="section-title">
+                        <div class="section-icon">💼</div> Experience
+                    </div>
+                    <div th:each="exp : ${resume.experiences}" class="timeline-item">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-title" th:text="${exp.jobTitle}"></div>
+                        <div class="timeline-sub"
+                            th:text="${exp.company} + (${exp.location != null} ? ' · ' + ${exp.location} : '')"></div>
+                        <div class="timeline-sub"
+                            th:text="${exp.startDate} + ' → ' + (${exp.current} ? 'Present' : ${exp.endDate})"></div>
+                        <div class="timeline-desc" th:if="${exp.description}" th:text="${exp.description}"></div>
+                    </div>
+                </div>
+
+                <!-- Projects -->
+                <div class="profile-section" th:if="${!#lists.isEmpty(resume.projects)}">
+                    <div class="section-title">
+                        <div class="section-icon">🚀</div> Projects
+                    </div>
+                    <div class="project-grid">
+                        <div th:each="proj : ${resume.projects}" class="project-card">
+                            <div class="project-name" th:text="${proj.name}"></div>
+                            <div class="project-tech" th:if="${proj.techStack}" th:text="${proj.techStack}"></div>
+                            <div class="project-desc" th:if="${proj.description}" style="white-space: pre-line;"
+                                th:text="${proj.description}"></div>
+                            <div class="project-links">
+                                <a th:if="${proj.projectUrl}" th:href="${proj.projectUrl}" target="_blank"
+                                    class="project-link">🔗 Live</a>
+                                <a th:if="${proj.githubUrl}" th:href="${proj.githubUrl}" target="_blank"
+                                    class="project-link">⌥ GitHub</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Sidebar -->
+            <div>
+                <!-- Contact -->
+                <div class="sidebar-card">
+                    <div class="sidebar-card-title">Contact</div>
+                    <div style="display:flex; flex-direction:column; gap:0.5rem; justify-content:center;">
+                        <div
+                            style="display:flex; align-items:center; gap:0.5rem; color:var(--text-muted); font-size:0.85rem;">
+                            <span>📧</span> <span th:text="${resume.user.email}"></span>
+                        </div>
+                        <div th:if="${resume.profile != null and resume.profile.phone != null}"
+                            style="display:flex; align-items:center; gap:0.5rem; color:var(--text-muted); font-size:0.85rem;">
+                            <span>📞</span> <span th:text="${resume.profile.phone}"></span>
+                        </div>
+                        <div th:if="${resume.profile != null and resume.profile.location != null}"
+                            style="display:flex; align-items:center; gap:0.5rem; color:var(--text-muted); font-size:0.85rem;">
+                            <span>📍</span> <span th:text="${resume.profile.location}"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Education -->
+                <div class="sidebar-card" th:if="${!#lists.isEmpty(resume.educations)}">
+                    <div class="sidebar-card-title">Education</div>
+                    <div th:each="edu : ${resume.educations}" style="margin-bottom:0.8rem;">
+                        <div style="font-weight:600;font-size:0.88rem;" th:text="${edu.degree}"></div>
+                        <div style="color:var(--text-muted);font-size:0.82rem;" th:text="${edu.institution}"></div>
+                        <div style="color:var(--text-subtle);font-size:0.78rem;"
+                            th:text="${edu.startYear} + ' – ' + ${edu.endYear}"></div>
+                        <div style="white-space: pre-line; font-size: 0.82rem; margin-top: 0.3rem;"
+                            th:if="${edu.description}" th:text="${edu.description}"></div>
+                    </div>
+                </div>
+
+                <!-- Skills -->
+                <div class="sidebar-card" th:if="${groupedSkills != null and not #maps.isEmpty(groupedSkills)}">
+                    <div class="sidebar-card-title">Skills</div>
+                    <div th:each="entry : ${groupedSkills}" style="margin-bottom: 1rem;">
+                        <div style="font-weight: 600; font-size: 0.82rem; color: var(--text-muted); margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.05em;"
+                            th:text="${entry.key}"></div>
+                        <div class="skills-cloud">
+                            <div th:each="skill : ${entry.value}" class="skill-chip">
+                                <span th:text="${skill.name}"></span>
+                                <span class="skill-level" th:if="${skill.level}" th:text="${skill.level}"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Certifications -->
+                <div class="sidebar-card"
+                    th:if="${resume.certifications != null and !#lists.isEmpty(resume.certifications)}">
+                    <div class="sidebar-card-title">🏅 Certifications</div>
+                    <div th:each="cert : ${resume.certifications}" style="margin-bottom:0.9rem;">
+                        <div style="font-weight:600;font-size:0.88rem;" th:text="${cert.name}"></div>
+                        <div style="color:var(--text-muted);font-size:0.82rem;" th:text="${cert.issuer}"></div>
+                        <div style="color:var(--text-subtle);font-size:0.78rem;"
+                            th:text="${cert.issueDate} + (${cert.expiryDate != null} ? ' – ' + ${cert.expiryDate} : '')">
+                        </div>
+                        <div style="display:flex;gap:0.6rem;flex-wrap:wrap;margin-top:0.2rem;">
+                            <a th:if="${cert.credentialUrl}" th:href="${cert.credentialUrl}" target="_blank"
+                                style="font-size:0.78rem;color:var(--primary);">Verify ↗</a>
+                            <a th:if="${cert.certificateFileUrl}" th:href="${cert.certificateFileUrl}" target="_blank"
+                                style="font-size:0.78rem;color:#43e6fc;">📄 View Certificate</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">© 2026 OpenPortfolio</footer>
+</body>
+
+</html>
