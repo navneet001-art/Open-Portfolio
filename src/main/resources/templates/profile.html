@@ -20,10 +20,11 @@
         <div class="profile-hero">
             <div class="profile-top">
                 <!-- Show photo if uploaded, otherwise show initial -->
-                <div class="profile-avatar" th:if="${resume.profile != null and resume.profile.profilePicUrl != null}"
+                <div class="profile-avatar"
+                    th:if="${resume.profile != null and resume.profile.profilePicUrl != null}"
                     style="background:none;padding:0;overflow:hidden;">
                     <img th:src="${resume.profile.profilePicUrl}" th:alt="${resume.user.fullName}"
-                        style="width:90px;height:90px;border-radius:50%;object-fit:cover;display:block;" />
+                        style="width:96px;height:96px;border-radius:50%;object-fit:cover;display:block;" />
                 </div>
                 <div class="profile-avatar"
                     th:unless="${resume.profile != null and resume.profile.profilePicUrl != null}"
@@ -31,7 +32,8 @@
 
                 <div style="flex:1;">
                     <div class="profile-name" th:text="${resume.user.fullName}">John Doe</div>
-                    <div class="profile-headline" th:if="${resume.profile != null and resume.profile.headline != null}"
+                    <div class="profile-headline"
+                        th:if="${resume.profile != null and resume.profile.headline != null}"
                         th:text="${resume.profile.headline}">Developer</div>
                     <div class="profile-meta">
                         <span class="profile-meta-item">
@@ -49,17 +51,14 @@
                         <a th:if="${resume.profile != null and not #strings.isEmpty(resume.profile.leetcode)}"
                             th:href="${resume.profile.leetcode}" target="_blank" class="profile-link">🟡 LeetCode</a>
                         <a th:if="${resume.profile != null and not #strings.isEmpty(resume.profile.codeforces)}"
-                            th:href="${resume.profile.codeforces}" target="_blank" class="profile-link">🔵
-                            Codeforces</a>
+                            th:href="${resume.profile.codeforces}" target="_blank" class="profile-link">🔵 Codeforces</a>
                         <a th:if="${resume.profile != null and not #strings.isEmpty(resume.profile.hackerrank)}"
-                            th:href="${resume.profile.hackerrank}" target="_blank" class="profile-link">🟢
-                            HackerRank</a>
+                            th:href="${resume.profile.hackerrank}" target="_blank" class="profile-link">🟢 HackerRank</a>
                         <a th:if="${resume.profile != null and not #strings.isEmpty(resume.profile.codechef)}"
                             th:href="${resume.profile.codechef}" target="_blank" class="profile-link">🟤 CodeChef</a>
                         <a th:if="${resume.profile != null and not #strings.isEmpty(resume.profile.geeksforgeeks)}"
                             th:href="${resume.profile.geeksforgeeks}" target="_blank" class="profile-link">🟩 GFG</a>
-                        <a th:href="@{'/resume/' + ${resume.user.username}}" class="btn btn-primary btn-sm">📄 Download
-                            Resume</a>
+                        <a th:href="@{'/resume/' + ${resume.user.username}}" class="btn btn-primary btn-sm">📄 Download Resume</a>
                     </div>
                 </div>
             </div>
@@ -118,10 +117,9 @@
             <div>
                 <!-- Contact -->
                 <div class="sidebar-card">
-                    <div class="sidebar-card-title">Contact</div>
-                    <div style="display:flex; flex-direction:column; gap:0.5rem; justify-content:center;">
-                        <div
-                            style="display:flex; align-items:center; gap:0.5rem; color:var(--text-muted); font-size:0.85rem;">
+                    <div class="sidebar-card-title">📬 Contact</div>
+                    <div style="display:flex; flex-direction:column; gap:0.6rem;">
+                        <div style="display:flex; align-items:center; gap:0.5rem; color:var(--text-muted); font-size:0.85rem;">
                             <span>📧</span> <span th:text="${resume.user.email}"></span>
                         </div>
                         <div th:if="${resume.profile != null and resume.profile.phone != null}"
@@ -137,8 +135,8 @@
 
                 <!-- Education -->
                 <div class="sidebar-card" th:if="${!#lists.isEmpty(resume.educations)}">
-                    <div class="sidebar-card-title">Education</div>
-                    <div th:each="edu : ${resume.educations}" style="margin-bottom:0.8rem;">
+                    <div class="sidebar-card-title">🎓 Education</div>
+                    <div th:each="edu : ${resume.educations}" style="margin-bottom:0.9rem;">
                         <div style="font-weight:600;font-size:0.88rem;" th:text="${edu.degree}"></div>
                         <div style="color:var(--text-muted);font-size:0.82rem;" th:text="${edu.institution}"></div>
                         <div style="color:var(--text-subtle);font-size:0.78rem;"
@@ -150,9 +148,9 @@
 
                 <!-- Skills -->
                 <div class="sidebar-card" th:if="${groupedSkills != null and not #maps.isEmpty(groupedSkills)}">
-                    <div class="sidebar-card-title">Skills</div>
+                    <div class="sidebar-card-title">⚡ Skills</div>
                     <div th:each="entry : ${groupedSkills}" style="margin-bottom: 1rem;">
-                        <div style="font-weight: 600; font-size: 0.82rem; color: var(--text-muted); margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.05em;"
+                        <div style="font-weight: 600; font-size: 0.78rem; color: var(--text-muted); margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.07em;"
                             th:text="${entry.key}"></div>
                         <div class="skills-cloud">
                             <div th:each="skill : ${entry.value}" class="skill-chip">
@@ -173,11 +171,11 @@
                         <div style="color:var(--text-subtle);font-size:0.78rem;"
                             th:text="${cert.issueDate} + (${cert.expiryDate != null} ? ' – ' + ${cert.expiryDate} : '')">
                         </div>
-                        <div style="display:flex;gap:0.6rem;flex-wrap:wrap;margin-top:0.2rem;">
+                        <div style="display:flex;gap:0.6rem;flex-wrap:wrap;margin-top:0.3rem;">
                             <a th:if="${cert.credentialUrl}" th:href="${cert.credentialUrl}" target="_blank"
                                 style="font-size:0.78rem;color:var(--primary);">Verify ↗</a>
                             <a th:if="${cert.certificateFileUrl}" th:href="${cert.certificateFileUrl}" target="_blank"
-                                style="font-size:0.78rem;color:#43e6fc;">📄 View Certificate</a>
+                                style="font-size:0.78rem;color:#6ee7b7;">📄 View Certificate</a>
                         </div>
                     </div>
                 </div>

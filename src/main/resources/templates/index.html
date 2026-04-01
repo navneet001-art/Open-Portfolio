@@ -25,14 +25,14 @@
             </p>
 
             <!-- Alert for not found -->
-            <div th:if="${error}" class="alert alert-danger" style="max-width:480px;margin:0 auto 1.5rem;">
-                <span th:text="${error}"></span>
+            <div th:if="${error}" class="alert alert-danger" style="max-width:500px;margin:0 auto 1.5rem;text-align:left;">
+                <span>⚠</span><span th:text="${error}"></span>
             </div>
 
             <!-- Search Box -->
             <form class="hero-search" action="/search" method="get">
-                <input type="text" name="username" id="username-search" placeholder="Search by username..." required
-                    autocomplete="off" />
+                <input type="text" name="username" id="username-search"
+                    placeholder="Search by username…" required autocomplete="off" />
                 <button type="submit" class="btn btn-primary">Search →</button>
             </form>
 
@@ -64,7 +64,7 @@
             <div class="feature-card">
                 <div class="feature-icon">🔍</div>
                 <div class="feature-title">Search by Username</div>
-                <div class="feature-desc">Recruiters & peers can find you instantly without creating an account.</div>
+                <div class="feature-desc">Recruiters &amp; peers can find you instantly without creating an account.</div>
             </div>
             <div class="feature-card">
                 <div class="feature-icon">📄</div>

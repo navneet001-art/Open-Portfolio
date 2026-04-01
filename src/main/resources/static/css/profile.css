@@ -1,7 +1,16 @@
+/* ===== PROFILE HERO ===== */
 .profile-hero {
-    padding: 3rem 0 2rem;
+    padding: 3rem 0 2.5rem;
     border-bottom: 1px solid var(--border);
-    margin-bottom: 2rem;
+    margin-bottom: 2.5rem;
+    position: relative;
+}
+.profile-hero::before {
+    content: '';
+    position: absolute;
+    top: 0; left: -2rem; right: -2rem; bottom: 0;
+    background: linear-gradient(180deg, rgba(79,128,225,0.04) 0%, transparent 100%);
+    pointer-events: none;
 }
 
 .profile-top {
@@ -9,126 +18,144 @@
     align-items: flex-start;
     gap: 2rem;
     flex-wrap: wrap;
+    position: relative; z-index: 1;
 }
 
+/* Avatar */
 .profile-avatar {
-    width: 90px;
-    height: 90px;
+    width: 96px;
+    height: 96px;
     border-radius: 50%;
-    background: linear-gradient(135deg, var(--primary), #8b5cf6);
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 50%, #7ba3f0 100%);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-family: 'Outfit', sans-serif;
-    font-size: 2.2rem;
+    font-family: "Times New Roman", Times, serif;
+    font-size: 2.4rem;
     font-weight: 800;
     color: #fff;
     flex-shrink: 0;
+    box-shadow: 0 0 0 3px rgba(79,128,225,0.25), 0 8px 28px rgba(0,0,0,0.12);
+    transition: var(--transition);
 }
+.profile-avatar:hover { box-shadow: 0 0 0 4px rgba(79,128,225,0.4), 0 12px 36px rgba(0,0,0,0.15); }
 
 .profile-name {
-    font-family: 'Outfit', sans-serif;
-    font-size: 2rem;
+    font-family: "Times New Roman", Times, serif;
+    font-size: 2.1rem;
     font-weight: 800;
     line-height: 1.1;
+    letter-spacing: -0.01em;
+    color: #16213e;
 }
 
 .profile-headline {
     color: var(--primary);
     font-weight: 500;
     font-size: 1rem;
-    margin: 0.3rem 0;
+    margin: 0.35rem 0;
 }
 
 .profile-meta {
     display: flex;
     flex-wrap: wrap;
-    gap: 1rem;
+    gap: 0.75rem;
     margin-top: 0.75rem;
 }
 
 .profile-meta-item {
     display: flex;
     align-items: center;
-    gap: 0.3rem;
+    gap: 0.35rem;
     color: var(--text-muted);
-    font-size: 0.85rem;
+    font-size: 0.83rem;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 50px;
+    padding: 0.2rem 0.75rem;
+    box-shadow: var(--shadow-sm);
 }
 
 .profile-links {
     display: flex;
-    gap: 0.75rem;
+    gap: 0.6rem;
     flex-wrap: wrap;
-    margin-top: 1rem;
+    margin-top: 1.1rem;
 }
 
 .profile-link {
     display: inline-flex;
     align-items: center;
     gap: 0.3rem;
-    padding: 0.4rem 1rem;
+    padding: 0.38rem 0.95rem;
     border-radius: 50px;
-    background: var(--bg-card);
-    border: 1px solid var(--border);
+    background: #fff;
+    border: 1px solid var(--border-strong);
     color: var(--text-muted);
-    font-size: 0.82rem;
+    font-size: 0.8rem;
+    font-weight: 500;
     transition: var(--transition);
+    box-shadow: var(--shadow-sm);
 }
-
 .profile-link:hover {
-    border-color: var(--primary);
+    background: rgba(79,128,225,0.08);
+    border-color: rgba(79,128,225,0.3);
     color: var(--primary);
+    transform: translateY(-1px);
 }
 
+/* ===== CONTENT LAYOUT ===== */
 .content-grid {
     display: grid;
     grid-template-columns: 1fr 300px;
     gap: 2rem;
+    align-items: start;
 }
 
 .profile-section {
-    margin-bottom: 2rem;
+    margin-bottom: 2.2rem;
 }
 
+/* ===== TIMELINE ===== */
 .timeline-item {
     position: relative;
-    padding-left: 1.5rem;
-    padding-bottom: 1.5rem;
+    padding-left: 1.6rem;
+    padding-bottom: 1.75rem;
     border-left: 2px solid var(--border);
 }
-
-.timeline-item:last-child {
-    border-left-color: transparent;
-}
+.timeline-item:last-child { border-left-color: transparent; padding-bottom: 0; }
 
 .timeline-dot {
     position: absolute;
-    left: -5px;
-    top: 4px;
-    width: 8px;
-    height: 8px;
+    left: -5px; top: 5px;
+    width: 8px; height: 8px;
     border-radius: 50%;
     background: var(--primary);
+    box-shadow: 0 0 8px var(--primary-glow);
 }
 
 .timeline-title {
-    font-weight: 600;
-    font-size: 0.95rem;
+    font-weight: 700;
+    font-size: 0.93rem;
+    color: var(--text);
+    font-family: "Times New Roman", Times, serif;
 }
 
 .timeline-sub {
     color: var(--text-muted);
-    font-size: 0.83rem;
+    font-size: 0.81rem;
+    margin-top: 0.15rem;
 }
 
 .timeline-desc {
     color: var(--text-muted);
-    font-size: 0.85rem;
-    margin-top: 0.4rem;
-    line-height: 1.6;
+    font-size: 0.84rem;
+    margin-top: 0.5rem;
+    line-height: 1.65;
     white-space: pre-line;
 }
 
+/* ===== SKILLS ===== */
 .skills-cloud {
     display: flex;
     flex-wrap: wrap;
@@ -136,23 +163,31 @@
 }
 
 .skill-chip {
-    padding: 0.35rem 0.9rem;
+    padding: 0.3rem 0.85rem;
     border-radius: 50px;
-    background: rgba(108, 99, 255, 0.1);
-    border: 1px solid rgba(108, 99, 255, 0.2);
-    font-size: 0.82rem;
+    background: rgba(79,128,225,0.08);
+    border: 1px solid rgba(79,128,225,0.18);
+    font-size: 0.8rem;
     color: var(--text);
     font-weight: 500;
     display: flex;
     align-items: center;
     gap: 0.4rem;
+    transition: var(--transition);
+}
+.skill-chip:hover {
+    background: rgba(79,128,225,0.15);
+    border-color: rgba(79,128,225,0.35);
+    transform: translateY(-1px);
 }
 
 .skill-level {
-    font-size: 0.7rem;
+    font-size: 0.68rem;
     color: var(--primary);
+    opacity: 0.8;
 }
 
+/* ===== PROJECTS ===== */
 .project-grid {
     display: grid;
     grid-template-columns: 1fr;
@@ -163,75 +198,92 @@
     background: var(--bg-card);
     border: 1px solid var(--border);
     border-radius: var(--radius);
-    padding: 1.2rem;
+    padding: 1.35rem;
     transition: var(--transition);
+    position: relative; overflow: hidden;
+    box-shadow: var(--shadow-card);
 }
-
+.project-card::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--primary), var(--accent));
+    opacity: 0; transition: opacity 0.25s;
+}
 .project-card:hover {
-    border-color: var(--primary);
-    transform: translateY(-2px);
+    border-color: rgba(79,128,225,0.3);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 28px rgba(79,128,225,0.1);
 }
+.project-card:hover::after { opacity: 1; }
 
 .project-name {
     font-weight: 700;
     font-size: 0.95rem;
+    font-family: "Times New Roman", Times, serif;
+    color: var(--text);
 }
 
 .project-tech {
-    font-size: 0.78rem;
+    font-size: 0.76rem;
     color: var(--primary);
     margin: 0.25rem 0;
+    font-weight: 500;
 }
 
 .project-desc {
     font-size: 0.83rem;
     color: var(--text-muted);
-    line-height: 1.5;
+    line-height: 1.55;
 }
 
 .project-links {
     display: flex;
     gap: 0.5rem;
-    margin-top: 0.75rem;
+    margin-top: 0.85rem;
 }
 
 .project-link {
-    font-size: 0.78rem;
+    font-size: 0.77rem;
     color: var(--text-muted);
     border: 1px solid var(--border);
     border-radius: 50px;
-    padding: 0.2rem 0.6rem;
+    padding: 0.22rem 0.65rem;
     transition: var(--transition);
+    background: #fff;
 }
-
 .project-link:hover {
     color: var(--primary);
-    border-color: var(--primary);
+    border-color: rgba(79,128,225,0.4);
+    background: rgba(79,128,225,0.06);
 }
 
+/* ===== SIDEBAR CARDS ===== */
 .sidebar-card {
     background: var(--bg-card);
     border: 1px solid var(--border);
     border-radius: var(--radius);
-    padding: 1.2rem;
-    margin-bottom: 1.2rem;
+    padding: 1.3rem;
+    margin-bottom: 1.25rem;
+    box-shadow: var(--shadow-card);
+    transition: var(--transition);
 }
+.sidebar-card:hover { border-color: var(--border-strong); }
 
 .sidebar-card-title {
     font-weight: 700;
-    font-size: 0.88rem;
-    margin-bottom: 0.8rem;
+    font-size: 0.75rem;
+    margin-bottom: 1rem;
     color: var(--text-muted);
     text-transform: uppercase;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.09em;
+    display: flex; align-items: center; gap: 0.4rem;
 }
 
+/* ===== RESPONSIVE ===== */
 @media (max-width: 900px) {
-    .content-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .project-grid {
-        grid-template-columns: 1fr;
-    }
+    .content-grid { grid-template-columns: 1fr; }
+    .project-grid  { grid-template-columns: 1fr; }
+    .profile-name  { font-size: 1.7rem; }
 }

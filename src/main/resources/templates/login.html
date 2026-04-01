@@ -20,7 +20,9 @@
                 <p class="auth-subtitle">Sign in to manage your profile</p>
             </div>
 
-            <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+            <div th:if="${error}" class="alert alert-danger">
+                <span>⚠</span><span th:text="${error}"></span>
+            </div>
 
             <form action="/login" method="post">
                 <div class="form-group">
@@ -33,7 +35,7 @@
                     <input class="form-control" type="password" id="login-password" name="password"
                         placeholder="••••••••" required />
                 </div>
-                <button type="submit" class="btn btn-primary w-100" style="justify-content:center;">
+                <button type="submit" class="btn btn-primary w-100" style="justify-content:center;margin-top:0.5rem;">
                     Sign In →
                 </button>
             </form>

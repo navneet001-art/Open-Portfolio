@@ -21,31 +21,35 @@
                 <p class="auth-subtitle">Start building your professional profile</p>
             </div>
 
-            <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+            <div th:if="${error}" class="alert alert-danger">
+                <span>⚠</span><span th:text="${error}"></span>
+            </div>
 
             <form action="/register" method="post">
                 <div class="form-group">
                     <label class="form-label" for="reg-fullname">Full Name</label>
-                    <input class="form-control" type="text" id="reg-fullname" name="fullName" placeholder="John Doe"
-                        required />
+                    <input class="form-control" type="text" id="reg-fullname" name="fullName"
+                        placeholder="John Doe" required />
                 </div>
                 <div class="form-group">
                     <label class="form-label" for="reg-username">Username</label>
-                    <input class="form-control" type="text" id="reg-username" name="username" placeholder="john_doe"
-                        required pattern="[a-zA-Z0-9_]{3,30}"
+                    <input class="form-control" type="text" id="reg-username" name="username"
+                        placeholder="john_doe" required pattern="[a-zA-Z0-9_]{3,30}"
                         title="3-30 characters: letters, numbers, underscores only" />
                 </div>
                 <div class="form-group">
                     <label class="form-label" for="reg-email">Email</label>
-                    <input class="form-control" type="email" id="reg-email" name="email" placeholder="john@example.com"
-                        required />
+                    <input class="form-control" type="email" id="reg-email" name="email"
+                        placeholder="john@gmail.com" required
+                        pattern="[a-zA-Z0-9._%+\-]+@gmail\.com"
+                        title="Please enter a valid gmail.com address" />
                 </div>
                 <div class="form-group">
                     <label class="form-label" for="reg-password">Password</label>
                     <input class="form-control" type="password" id="reg-password" name="password"
                         placeholder="Min. 6 characters" required minlength="6" />
                 </div>
-                <button type="submit" class="btn btn-primary w-100" style="justify-content:center;">
+                <button type="submit" class="btn btn-primary w-100" style="justify-content:center;margin-top:0.5rem;">
                     Create Account →
                 </button>
             </form>

@@ -26,7 +26,7 @@
                 <div class="avatar-name" th:text="${session.fullName}">John Doe</div>
                 <div class="avatar-username">@<span th:text="${session.username}">username</span></div>
             </div>
-            <div class="card" style="padding:0.5rem;">
+            <div style="padding:0.5rem;background:transparent;">
                 <ul class="sidebar-menu">
                     <li><a href="#profile" onclick="switchTab('profile')" class="active" id="tab-profile"> 👤
                             Profile</a></li>
@@ -44,9 +44,9 @@
                     Public Profile ↗</a>
                 <a th:href="@{'/resume/' + ${session.username}}" class="btn btn-primary btn-sm">Download Resume</a>
                 <button type="button" onclick="document.getElementById('deleteModal').style.display='flex'"
-                    style="background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);color:#ef4444;border-radius:var(--radius-sm);padding:0.45rem 1rem;font-size:0.82rem;font-weight:600;cursor:pointer;margin-top:0.5rem;transition:all 0.2s;"
-                    onmouseover="this.style.background='rgba(239,68,68,0.2)'"
-                    onmouseout="this.style.background='rgba(239,68,68,0.1)'">
+                    style="background:rgba(239,68,68,0.15);border:1px solid rgba(239,68,68,0.4);color:#fca5a5;border-radius:var(--radius-sm);padding:0.45rem 1rem;font-size:0.82rem;font-weight:600;cursor:pointer;margin-top:0.5rem;transition:all 0.2s;width:100%;text-align:left;"
+                    onmouseover="this.style.background='rgba(239,68,68,0.28)'"
+                    onmouseout="this.style.background='rgba(239,68,68,0.15)'">
                     🗑 Delete Account
                 </button>
             </div>
@@ -92,7 +92,10 @@
                             <div class="form-group">
                                 <label class="form-label" for="phone">Phone</label>
                                 <input class="form-control" type="tel" id="phone" name="phone"
-                                    th:value="${profile != null ? profile.phone : ''}" placeholder="+91 9876543210" />
+                                    th:value="${profile != null ? profile.phone : ''}" placeholder="9876543210"
+                                    required minlength="10" maxlength="10"
+                                    pattern="[0-9]{10}"
+                                    title="Enter a valid 10-digit phone number" />
                             </div>
                             <div class="form-group">
                                 <label class="form-label" for="location">Location</label>
@@ -218,14 +221,23 @@
                                 <div class="form-row">
                                     <div class="form-group">
                                         <label class="form-label">Start Date *</label>
-                                        <input class="form-control" type="text" name="startDate"
-                                            th:value="${exp.startDate}" required />
+                                        <div class="mpy-picker" th:attr="data-value=${exp.startDate}">
+                                            <div class="mpy-row">
+                                                <select class="form-control mpy-month"><option value="">Month</option><option value="01">January</option><option value="02">February</option><option value="03">March</option><option value="04">April</option><option value="05">May</option><option value="06">June</option><option value="07">July</option><option value="08">August</option><option value="09">September</option><option value="10">October</option><option value="11">November</option><option value="12">December</option></select>
+                                                <select class="form-control mpy-year"><option value="">Year</option><option th:each="yr : ${#numbers.sequence(2035,1950,-1)}" th:value="${yr}" th:text="${yr}"></option></select>
+                                            </div>
+                                            <input type="hidden" name="startDate" class="mpy-hidden" required />
+                                        </div>
                                     </div>
                                     <div class="form-group">
-                                        <label class="form-label">End Date <span class="end-date-req"
-                                                th:style="${exp.current ? 'display:none;' : ''}">*</span></label>
-                                        <input class="form-control" type="text" name="endDate" th:value="${exp.endDate}"
-                                            th:required="${!exp.current}" />
+                                        <label class="form-label">End Date <span class="end-date-req" th:style="${exp.current ? 'display:none;' : ''}">*</span></label>
+                                        <div class="mpy-picker" th:attr="data-value=${exp.endDate}">
+                                            <div class="mpy-row">
+                                                <select class="form-control mpy-month"><option value="">Month</option><option value="01">January</option><option value="02">February</option><option value="03">March</option><option value="04">April</option><option value="05">May</option><option value="06">June</option><option value="07">July</option><option value="08">August</option><option value="09">September</option><option value="10">October</option><option value="11">November</option><option value="12">December</option></select>
+                                                <select class="form-control mpy-year"><option value="">Year</option><option th:each="yr : ${#numbers.sequence(2035,1950,-1)}" th:value="${yr}" th:text="${yr}"></option></select>
+                                            </div>
+                                            <input type="hidden" name="endDate" class="mpy-hidden" />
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -272,13 +284,23 @@
                         <div class="form-row">
                             <div class="form-group">
                                 <label class="form-label">Start Date *</label>
-                                <input class="form-control" type="text" name="startDate" placeholder="Jan 2023"
-                                    required />
+                                <div class="mpy-picker">
+                                    <div class="mpy-row">
+                                        <select class="form-control mpy-month"><option value="">Month</option><option value="01">January</option><option value="02">February</option><option value="03">March</option><option value="04">April</option><option value="05">May</option><option value="06">June</option><option value="07">July</option><option value="08">August</option><option value="09">September</option><option value="10">October</option><option value="11">November</option><option value="12">December</option></select>
+                                        <select class="form-control mpy-year"><option value="">Year</option><option th:each="yr : ${#numbers.sequence(2035,1950,-1)}" th:value="${yr}" th:text="${yr}"></option></select>
+                                    </div>
+                                    <input type="hidden" name="startDate" class="mpy-hidden" required />
+                                </div>
                             </div>
                             <div class="form-group">
                                 <label class="form-label">End Date <span class="end-date-req">*</span></label>
-                                <input class="form-control" type="text" name="endDate"
-                                    placeholder="Dec 2024 (or leave blank if current)" required />
+                                <div class="mpy-picker">
+                                    <div class="mpy-row">
+                                        <select class="form-control mpy-month"><option value="">Month</option><option value="01">January</option><option value="02">February</option><option value="03">March</option><option value="04">April</option><option value="05">May</option><option value="06">June</option><option value="07">July</option><option value="08">August</option><option value="09">September</option><option value="10">October</option><option value="11">November</option><option value="12">December</option></select>
+                                        <select class="form-control mpy-year"><option value="">Year</option><option th:each="yr : ${#numbers.sequence(2035,1950,-1)}" th:value="${yr}" th:text="${yr}"></option></select>
+                                    </div>
+                                    <input type="hidden" name="endDate" class="mpy-hidden" required />
+                                </div>
                             </div>
                         </div>
                         <div class="form-group">
@@ -364,14 +386,24 @@
                                 </div>
                                 <div class="form-row">
                                     <div class="form-group">
-                                        <label class="form-label">Start Year</label>
-                                        <input class="form-control" type="text" name="startYear"
-                                            th:value="${edu.startYear}" />
+                                        <label class="form-label">Start (Month &amp; Year)</label>
+                                        <div class="mpy-picker" th:attr="data-value=${edu.startYear}">
+                                            <div class="mpy-row">
+                                                <select class="form-control mpy-month"><option value="">Month</option><option value="01">January</option><option value="02">February</option><option value="03">March</option><option value="04">April</option><option value="05">May</option><option value="06">June</option><option value="07">July</option><option value="08">August</option><option value="09">September</option><option value="10">October</option><option value="11">November</option><option value="12">December</option></select>
+                                                <select class="form-control mpy-year"><option value="">Year</option><option th:each="yr : ${#numbers.sequence(2035,1950,-1)}" th:value="${yr}" th:text="${yr}"></option></select>
+                                            </div>
+                                            <input type="hidden" name="startYear" class="mpy-hidden" />
+                                        </div>
                                     </div>
                                     <div class="form-group">
-                                        <label class="form-label">End Year</label>
-                                        <input class="form-control" type="text" name="endYear"
-                                            th:value="${edu.endYear}" />
+                                        <label class="form-label">End (Month &amp; Year)</label>
+                                        <div class="mpy-picker" th:attr="data-value=${edu.endYear}">
+                                            <div class="mpy-row">
+                                                <select class="form-control mpy-month"><option value="">Month</option><option value="01">January</option><option value="02">February</option><option value="03">March</option><option value="04">April</option><option value="05">May</option><option value="06">June</option><option value="07">July</option><option value="08">August</option><option value="09">September</option><option value="10">October</option><option value="11">November</option><option value="12">December</option></select>
+                                                <select class="form-control mpy-year"><option value="">Year</option><option th:each="yr : ${#numbers.sequence(2035,1950,-1)}" th:value="${yr}" th:text="${yr}"></option></select>
+                                            </div>
+                                            <input type="hidden" name="endYear" class="mpy-hidden" />
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -416,12 +448,24 @@
                         </div>
                         <div class="form-row">
                             <div class="form-group">
-                                <label class="form-label">Start Year</label>
-                                <input class="form-control" type="text" name="startYear" placeholder="2020" />
+                                <label class="form-label">Start (Month &amp; Year)</label>
+                                <div class="mpy-picker">
+                                    <div class="mpy-row">
+                                        <select class="form-control mpy-month"><option value="">Month</option><option value="01">January</option><option value="02">February</option><option value="03">March</option><option value="04">April</option><option value="05">May</option><option value="06">June</option><option value="07">July</option><option value="08">August</option><option value="09">September</option><option value="10">October</option><option value="11">November</option><option value="12">December</option></select>
+                                        <select class="form-control mpy-year"><option value="">Year</option><option th:each="yr : ${#numbers.sequence(2035,1950,-1)}" th:value="${yr}" th:text="${yr}"></option></select>
+                                    </div>
+                                    <input type="hidden" name="startYear" class="mpy-hidden" />
+                                </div>
                             </div>
                             <div class="form-group">
-                                <label class="form-label">End Year</label>
-                                <input class="form-control" type="text" name="endYear" placeholder="2024" />
+                                <label class="form-label">End (Month &amp; Year)</label>
+                                <div class="mpy-picker">
+                                    <div class="mpy-row">
+                                        <select class="form-control mpy-month"><option value="">Month</option><option value="01">January</option><option value="02">February</option><option value="03">March</option><option value="04">April</option><option value="05">May</option><option value="06">June</option><option value="07">July</option><option value="08">August</option><option value="09">September</option><option value="10">October</option><option value="11">November</option><option value="12">December</option></select>
+                                        <select class="form-control mpy-year"><option value="">Year</option><option th:each="yr : ${#numbers.sequence(2035,1950,-1)}" th:value="${yr}" th:text="${yr}"></option></select>
+                                    </div>
+                                    <input type="hidden" name="endYear" class="mpy-hidden" />
+                                </div>
                             </div>
                         </div>
                         <div class="form-group">
@@ -494,12 +538,23 @@
                         <div class="form-row">
                             <div class="form-group">
                                 <label class="form-label">Issue Date</label>
-                                <input class="form-control" type="text" name="issueDate" placeholder="Jan 2024" />
+                                <div class="mpy-picker">
+                                    <div class="mpy-row">
+                                        <select class="form-control mpy-month"><option value="">Month</option><option value="01">January</option><option value="02">February</option><option value="03">March</option><option value="04">April</option><option value="05">May</option><option value="06">June</option><option value="07">July</option><option value="08">August</option><option value="09">September</option><option value="10">October</option><option value="11">November</option><option value="12">December</option></select>
+                                        <select class="form-control mpy-year"><option value="">Year</option><option th:each="yr : ${#numbers.sequence(2035,1950,-1)}" th:value="${yr}" th:text="${yr}"></option></select>
+                                    </div>
+                                    <input type="hidden" name="issueDate" class="mpy-hidden" />
+                                </div>
                             </div>
                             <div class="form-group">
-                                <label class="form-label">Expiry Date</label>
-                                <input class="form-control" type="text" name="expiryDate"
-                                    placeholder="Jan 2027 (optional)" />
+                                <label class="form-label">Expiry Date <span style="color:var(--text-subtle);font-size:0.8rem;">(optional)</span></label>
+                                <div class="mpy-picker">
+                                    <div class="mpy-row">
+                                        <select class="form-control mpy-month"><option value="">Month</option><option value="01">January</option><option value="02">February</option><option value="03">March</option><option value="04">April</option><option value="05">May</option><option value="06">June</option><option value="07">July</option><option value="08">August</option><option value="09">September</option><option value="10">October</option><option value="11">November</option><option value="12">December</option></select>
+                                        <select class="form-control mpy-year"><option value="">Year</option><option th:each="yr : ${#numbers.sequence(2035,1950,-1)}" th:value="${yr}" th:text="${yr}"></option></select>
+                                    </div>
+                                    <input type="hidden" name="expiryDate" class="mpy-hidden" />
+                                </div>
                             </div>
                         </div>
                         <div class="form-row">
@@ -782,6 +837,45 @@
     </div>
 
     <script th:src="@{/js/dashboard.js}"></script>
+
+    <!-- Month-Year Picker Initialiser -->
+    <script>
+    (function () {
+        function initPickers() {
+            document.querySelectorAll('.mpy-picker').forEach(function (picker) {
+                var monthSel = picker.querySelector('.mpy-month');
+                var yearSel  = picker.querySelector('.mpy-year');
+                var hidden   = picker.querySelector('.mpy-hidden');
+
+                // Pre-populate from existing value (format: YYYY-MM)
+                var existing = picker.getAttribute('data-value') || '';
+                if (existing && existing.indexOf('-') !== -1) {
+                    var parts = existing.split('-');
+                    yearSel.value  = parts[0];
+                    monthSel.value = parts[1];
+                    hidden.value   = existing;
+                }
+
+                function sync() {
+                    var m = monthSel.value;
+                    var y = yearSel.value;
+                    hidden.value = (m && y) ? y + '-' + m : '';
+                }
+
+                monthSel.addEventListener('change', sync);
+                yearSel.addEventListener('change', sync);
+            });
+        }
+
+        // Run on page load and also after dynamic edit forms are shown
+        document.addEventListener('DOMContentLoaded', initPickers);
+        // Re-run when any edit form is toggled open (MutationObserver)
+        var observer = new MutationObserver(initPickers);
+        document.querySelectorAll('.tab-panel').forEach(function(p) {
+            observer.observe(p, { childList: true, subtree: true, attributeFilter: ['style', 'class'] });
+        });
+    })();
+    </script>
 
     <!-- Delete Account Confirmation Modal -->
     <div id="deleteModal"
