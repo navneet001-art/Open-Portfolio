@@ -42,22 +42,22 @@
                     </div>
                     <div class="profile-links">
                         <a th:if="${resume.profile != null and not #strings.isEmpty(resume.profile.linkedin)}"
-                            th:href="${resume.profile.linkedin}" target="_blank" class="profile-link">in LinkedIn</a>
+                            th:href="'https://linkedin.com/in/' + ${resume.profile.linkedin}" target="_blank" class="profile-link">in LinkedIn</a>
                         <a th:if="${resume.profile != null and not #strings.isEmpty(resume.profile.github)}"
-                            th:href="${resume.profile.github}" target="_blank" class="profile-link">⌥ GitHub</a>
+                            th:href="'https://github.com/' + ${resume.profile.github}" target="_blank" class="profile-link">⌥ GitHub</a>
                         <a th:if="${resume.profile != null and not #strings.isEmpty(resume.profile.website)}"
                             th:href="${resume.profile.website}" target="_blank" class="profile-link">🌐 Website</a>
                         <!-- Competitive profiles -->
                         <a th:if="${resume.profile != null and not #strings.isEmpty(resume.profile.leetcode)}"
-                            th:href="${resume.profile.leetcode}" target="_blank" class="profile-link">🟡 LeetCode</a>
+                            th:href="'https://leetcode.com/u/' + ${resume.profile.leetcode}" target="_blank" class="profile-link">🟡 LeetCode</a>
                         <a th:if="${resume.profile != null and not #strings.isEmpty(resume.profile.codeforces)}"
-                            th:href="${resume.profile.codeforces}" target="_blank" class="profile-link">🔵 Codeforces</a>
+                            th:href="'https://codeforces.com/profile/' + ${resume.profile.codeforces}" target="_blank" class="profile-link">🔵 Codeforces</a>
                         <a th:if="${resume.profile != null and not #strings.isEmpty(resume.profile.hackerrank)}"
-                            th:href="${resume.profile.hackerrank}" target="_blank" class="profile-link">🟢 HackerRank</a>
+                            th:href="'https://www.hackerrank.com/profile/' + ${resume.profile.hackerrank}" target="_blank" class="profile-link">🟢 HackerRank</a>
                         <a th:if="${resume.profile != null and not #strings.isEmpty(resume.profile.codechef)}"
-                            th:href="${resume.profile.codechef}" target="_blank" class="profile-link">🟤 CodeChef</a>
+                            th:href="'https://www.codechef.com/users/' + ${resume.profile.codechef}" target="_blank" class="profile-link">🟤 CodeChef</a>
                         <a th:if="${resume.profile != null and not #strings.isEmpty(resume.profile.geeksforgeeks)}"
-                            th:href="${resume.profile.geeksforgeeks}" target="_blank" class="profile-link">🟩 GFG</a>
+                            th:href="'https://www.geeksforgeeks.org/user/' + ${resume.profile.geeksforgeeks}" target="_blank" class="profile-link">🟩 GFG</a>
                         <a th:href="@{'/resume/' + ${resume.user.username}}" class="btn btn-primary btn-sm">📄 Download Resume</a>
                     </div>
                 </div>

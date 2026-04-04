@@ -105,16 +105,30 @@
                         </div>
                         <div class="form-row">
                             <div class="form-group">
-                                <label class="form-label" for="linkedin">LinkedIn URL</label>
-                                <input class="form-control" type="url" id="linkedin" name="linkedin"
-                                    th:value="${profile != null ? profile.linkedin : ''}"
-                                    placeholder="https://linkedin.com/in/..." />
+                                <label class="form-label" for="linkedin">LinkedIn Username</label>
+                                <div style="display:flex;align-items:center;gap:0.5rem;">
+                                    <input class="form-control" type="text" id="linkedin" name="linkedin"
+                                        th:value="${profile != null ? profile.linkedin : ''}"
+                                        placeholder="your-linkedin-username"
+                                        oninput="updateSocialLink('linkedin','https://linkedin.com/in/')" />
+                                    <a id="linkedin-link" href="#" target="_blank"
+                                       th:href="${profile != null and profile.linkedin != null and !profile.linkedin.isEmpty()} ? 'https://linkedin.com/in/' + ${profile.linkedin} : '#'"
+                                       style="padding:0.4rem 0.75rem;background:rgba(108,99,255,0.1);border:1px solid rgba(108,99,255,0.3);border-radius:6px;font-size:0.8rem;color:var(--primary);white-space:nowrap;text-decoration:none;"
+                                       title="Visit LinkedIn profile">↗ Visit</a>
+                                </div>
                             </div>
                             <div class="form-group">
-                                <label class="form-label" for="github">GitHub URL</label>
-                                <input class="form-control" type="url" id="github" name="github"
-                                    th:value="${profile != null ? profile.github : ''}"
-                                    placeholder="https://github.com/..." />
+                                <label class="form-label" for="github">GitHub Username</label>
+                                <div style="display:flex;align-items:center;gap:0.5rem;">
+                                    <input class="form-control" type="text" id="github" name="github"
+                                        th:value="${profile != null ? profile.github : ''}"
+                                        placeholder="your-github-username"
+                                        oninput="updateSocialLink('github','https://github.com/')" />
+                                    <a id="github-link" href="#" target="_blank"
+                                       th:href="${profile != null and profile.github != null and !profile.github.isEmpty()} ? 'https://github.com/' + ${profile.github} : '#'"
+                                       style="padding:0.4rem 0.75rem;background:rgba(108,99,255,0.1);border:1px solid rgba(108,99,255,0.3);border-radius:6px;font-size:0.8rem;color:var(--primary);white-space:nowrap;text-decoration:none;"
+                                       title="Visit GitHub profile">↗ Visit</a>
+                                </div>
                             </div>
                         </div>
                         <div class="form-group">
@@ -124,43 +138,34 @@
                                 placeholder="https://yoursite.com" />
                         </div>
 
-                        <!-- Competitive Coding Profiles -->
-                        <div
-                            style="margin-top:1rem;margin-bottom:0.5rem;font-weight:600;font-size:0.85rem;color:var(--text-muted);letter-spacing:0.03em;">
-                            ⚔️ COMPETITIVE PROFILES</div>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label class="form-label" for="leetcode">🟡 LeetCode</label>
-                                <input class="form-control" type="url" id="leetcode" name="leetcode"
-                                    th:value="${profile != null ? profile.leetcode : ''}"
-                                    placeholder="https://leetcode.com/u/..." />
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label" for="codeforces">🔵 Codeforces</label>
-                                <input class="form-control" type="url" id="codeforces" name="codeforces"
-                                    th:value="${profile != null ? profile.codeforces : ''}"
-                                    placeholder="https://codeforces.com/profile/..." />
-                            </div>
+                        <!-- ===== COMPETITIVE PROFILES (dynamic pick-list) ===== -->
+                        <!-- Hidden inputs – always submitted so backend keeps existing values -->
+                        <input type="hidden" id="leetcode"       name="leetcode"       th:value="${profile != null ? profile.leetcode       : ''}" />
+                        <input type="hidden" id="codeforces"     name="codeforces"     th:value="${profile != null ? profile.codeforces     : ''}" />
+                        <input type="hidden" id="hackerrank"     name="hackerrank"     th:value="${profile != null ? profile.hackerrank     : ''}" />
+                        <input type="hidden" id="codechef"       name="codechef"       th:value="${profile != null ? profile.codechef       : ''}" />
+                        <input type="hidden" id="geeksforgeeks"  name="geeksforgeeks"  th:value="${profile != null ? profile.geeksforgeeks  : ''}" />
+
+                        <div style="margin-top:1.25rem;margin-bottom:0.4rem;font-weight:600;font-size:0.85rem;color:var(--text-muted);letter-spacing:0.03em;">
+                            ⚔️ COMPETITIVE PROFILES
                         </div>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label class="form-label" for="hackerrank">🟢 HackerRank</label>
-                                <input class="form-control" type="url" id="hackerrank" name="hackerrank"
-                                    th:value="${profile != null ? profile.hackerrank : ''}"
-                                    placeholder="https://hackerrank.com/profile/..." />
+
+                        <!-- Saved platform rows rendered by JS on page load -->
+                        <div id="cp-list" style="display:flex;flex-direction:column;gap:0.5rem;margin-bottom:0.5rem;"></div>
+
+                        <!-- Add Platform button + dropdown -->
+                        <div style="position:relative;display:inline-block;">
+                            <button type="button" id="cp-add-btn"
+                                onclick="toggleCpDropdown()"
+                                style="display:inline-flex;align-items:center;gap:0.4rem;padding:0.42rem 1rem;background:rgba(108,99,255,0.1);border:1px solid rgba(108,99,255,0.3);border-radius:50px;font-size:0.82rem;color:var(--primary);cursor:pointer;font-weight:600;transition:background 0.2s;"
+                                onmouseover="this.style.background='rgba(108,99,255,0.2)'"
+                                onmouseout="this.style.background='rgba(108,99,255,0.1)'">
+                                + Add Platform
+                            </button>
+                            <div id="cp-dropdown"
+                                style="display:none;position:absolute;top:calc(100% + 6px);left:0;z-index:200;background:var(--bg-card,#fff);border:1px solid var(--border,#d1d5db);border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,0.12);min-width:200px;overflow:hidden;">
+                                <!-- Options injected by JS (only unselected platforms shown) -->
                             </div>
-                            <div class="form-group">
-                                <label class="form-label" for="codechef">🟤 CodeChef</label>
-                                <input class="form-control" type="url" id="codechef" name="codechef"
-                                    th:value="${profile != null ? profile.codechef : ''}"
-                                    placeholder="https://codechef.com/users/..." />
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label" for="geeksforgeeks">🟩 GeeksForGeeks</label>
-                            <input class="form-control" type="url" id="geeksforgeeks" name="geeksforgeeks"
-                                th:value="${profile != null ? profile.geeksforgeeks : ''}"
-                                placeholder="https://auth.geeksforgeeks.org/user/..." />
                         </div>
 
                         <button type="submit" id="saveProfileBtn" class="btn btn-primary">Save Profile</button>
@@ -210,7 +215,7 @@
                                     <div class="form-group">
                                         <label class="form-label">Job Title *</label>
                                         <input class="form-control" type="text" name="jobTitle"
-                                            th:value="${exp.jobTitle}" required />
+                                            th:value="${exp.jobTitle}" required list="job-title-list" />
                                     </div>
                                     <div class="form-group">
                                         <label class="form-label">Company *</label>
@@ -274,7 +279,7 @@
                             <div class="form-group">
                                 <label class="form-label">Job Title *</label>
                                 <input class="form-control" type="text" name="jobTitle" placeholder="Software Engineer"
-                                    required />
+                                    required list="job-title-list" />
                             </div>
                             <div class="form-group">
                                 <label class="form-label">Company *</label>
@@ -365,7 +370,7 @@
                                     <div class="form-group">
                                         <label class="form-label">Degree *</label>
                                         <input class="form-control" type="text" name="degree" th:value="${edu.degree}"
-                                            required />
+                                            required list="degree-list" />
                                     </div>
                                     <div class="form-group">
                                         <label class="form-label">Institution *</label>
@@ -377,7 +382,7 @@
                                     <div class="form-group">
                                         <label class="form-label">Field of Study</label>
                                         <input class="form-control" type="text" name="fieldOfStudy"
-                                            th:value="${edu.fieldOfStudy}" />
+                                            th:value="${edu.fieldOfStudy}" list="fos-list" />
                                     </div>
                                     <div class="form-group">
                                         <label class="form-label">Grade / CGPA</label>
@@ -427,7 +432,7 @@
                             <div class="form-group">
                                 <label class="form-label">Degree *</label>
                                 <input class="form-control" type="text" name="degree" placeholder="B.Tech / BCA / MBA"
-                                    required />
+                                    required list="degree-list" />
                             </div>
                             <div class="form-group">
                                 <label class="form-label">Institution *</label>
@@ -439,7 +444,65 @@
                             <div class="form-group">
                                 <label class="form-label">Field of Study</label>
                                 <input class="form-control" type="text" name="fieldOfStudy"
-                                    placeholder="Computer Science" />
+                                    placeholder="Computer Science" list="fos-list" />
+
+                                <!-- Shared datalists (visible globally within page) -->
+                                <datalist id="job-title-list">
+                                    <option value="Software Engineer"><option value="Senior Software Engineer">
+                                    <option value="Junior Software Engineer"><option value="Full Stack Developer">
+                                    <option value="Frontend Developer"><option value="Backend Developer">
+                                    <option value="Mobile App Developer"><option value="Android Developer">
+                                    <option value="iOS Developer"><option value="React Native Developer">
+                                    <option value="DevOps Engineer"><option value="Site Reliability Engineer">
+                                    <option value="Cloud Engineer"><option value="Data Engineer">
+                                    <option value="Data Scientist"><option value="Machine Learning Engineer">
+                                    <option value="AI Engineer"><option value="Data Analyst">
+                                    <option value="Business Analyst"><option value="Product Manager">
+                                    <option value="Project Manager"><option value="Scrum Master">
+                                    <option value="QA Engineer"><option value="Test Automation Engineer">
+                                    <option value="Security Engineer"><option value="Cybersecurity Analyst">
+                                    <option value="Network Engineer"><option value="Systems Administrator">
+                                    <option value="Database Administrator"><option value="Embedded Systems Engineer">
+                                    <option value="UI/UX Designer"><option value="Graphic Designer">
+                                    <option value="Technical Writer"><option value="Research Intern">
+                                    <option value="Software Development Intern"><option value="Data Science Intern">
+                                    <option value="Web Developer"><option value="Solutions Architect">
+                                    <option value="IT Consultant"><option value="Technical Lead">
+                                    <option value="Engineering Manager">
+                                </datalist>
+                                <datalist id="degree-list">
+                                    <option value="B.Tech"><option value="B.E">
+                                    <option value="B.Sc"><option value="B.Com"><option value="B.A">
+                                    <option value="BCA"><option value="BBA"><option value="B.Pharm">
+                                    <option value="M.Tech"><option value="M.E">
+                                    <option value="M.Sc"><option value="M.Com"><option value="M.A">
+                                    <option value="MCA"><option value="MBA"><option value="M.Pharm">
+                                    <option value="Ph.D"><option value="MS">
+                                    <option value="Diploma"><option value="Polytechnic Diploma">
+                                    <option value="12th (HSC)"><option value="10th (SSC)">
+                                    <option value="B.Arch"><option value="B.Des"><option value="LLB">
+                                    <option value="MBBS"><option value="BDS">
+                                </datalist>
+                                <datalist id="fos-list">
+                                    <option value="Computer Science"><option value="Computer Science and Engineering">
+                                    <option value="Information Technology"><option value="Electronics and Communication Engineering">
+                                    <option value="Electrical Engineering"><option value="Mechanical Engineering">
+                                    <option value="Civil Engineering"><option value="Chemical Engineering">
+                                    <option value="Aerospace Engineering"><option value="Biomedical Engineering">
+                                    <option value="Data Science"><option value="Artificial Intelligence">
+                                    <option value="Machine Learning"><option value="Cyber Security">
+                                    <option value="Software Engineering"><option value="Information Systems">
+                                    <option value="Mathematics"><option value="Statistics">
+                                    <option value="Physics"><option value="Chemistry">
+                                    <option value="Commerce"><option value="Economics">
+                                    <option value="Business Administration"><option value="Finance">
+                                    <option value="Marketing"><option value="Human Resources">
+                                    <option value="Psychology"><option value="English Literature">
+                                    <option value="Journalism and Mass Communication">
+                                    <option value="Architecture"><option value="Design">
+                                    <option value="Law"><option value="Medicine">
+                                    <option value="Pharmacy"><option value="Biotechnology">
+                                </datalist>
                             </div>
                             <div class="form-group">
                                 <label class="form-label">Grade / CGPA</label>
@@ -875,6 +938,160 @@
             observer.observe(p, { childList: true, subtree: true, attributeFilter: ['style', 'class'] });
         });
     })();
+    </script>
+
+    <!-- Social links + Competitive Profile pick-list -->
+    <script>
+    /* ---- Social links (LinkedIn / GitHub) ---- */
+    function updateSocialLink(id, baseUrl) {
+        var input = document.getElementById(id);
+        var link  = document.getElementById(id + '-link');
+        if (!input || !link) return;
+        var val = input.value.trim();
+        link.href = val ? baseUrl + val : '#';
+    }
+
+    /* ---- Competitive Profiles pick-list ---- */
+    var CP_PLATFORMS = [
+        { id: 'leetcode',      label: '🟡 LeetCode',      base: 'https://leetcode.com/u/'                },
+        { id: 'codeforces',    label: '🔵 Codeforces',    base: 'https://codeforces.com/profile/'        },
+        { id: 'hackerrank',    label: '🟢 HackerRank',    base: 'https://www.hackerrank.com/profile/'    },
+        { id: 'codechef',      label: '🟤 CodeChef',      base: 'https://www.codechef.com/users/'        },
+        { id: 'geeksforgeeks', label: '🟩 GeeksForGeeks', base: 'https://www.geeksforgeeks.org/user/'    }
+    ];
+
+    /* Render all platform rows that currently have a value */
+    function renderCpList() {
+        var list = document.getElementById('cp-list');
+        if (!list) return;
+        list.innerHTML = '';
+        CP_PLATFORMS.forEach(function(p) {
+            var hidden = document.getElementById(p.id);
+            if (hidden && hidden.value.trim()) {
+                list.appendChild(makeCpRow(p, hidden.value.trim()));
+            }
+        });
+        renderCpDropdown();
+    }
+
+    /* Build one visible platform row */
+    function makeCpRow(p, username) {
+        var row = document.createElement('div');
+        row.id  = 'cp-row-' + p.id;
+        row.style.cssText = 'display:flex;align-items:center;gap:0.5rem;background:var(--bg-subtle,rgba(108,99,255,0.05));border:1px solid var(--border,#d1d5db);border-radius:8px;padding:0.4rem 0.6rem;';
+
+        var badge = document.createElement('span');
+        badge.style.cssText = 'font-size:0.82rem;font-weight:600;min-width:130px;color:var(--text,#1e293b);';
+        badge.textContent = p.label;
+
+        var inp = document.createElement('input');
+        inp.type  = 'text';
+        inp.value = username;
+        inp.placeholder = 'username';
+        inp.className = 'form-control';
+        inp.style.cssText = 'flex:1;font-size:0.85rem;padding:0.3rem 0.6rem;';
+        inp.oninput = (function(pid, base) {
+            return function() {
+                var hidden = document.getElementById(pid);
+                if (hidden) hidden.value = this.value.trim();
+                var visitLink = document.getElementById('cp-visit-' + pid);
+                if (visitLink) visitLink.href = this.value.trim() ? base + encodeURIComponent(this.value.trim()) : '#';
+            };
+        })(p.id, p.base);
+
+        var visitA = document.createElement('a');
+        visitA.id = 'cp-visit-' + p.id;
+        visitA.href   = username ? p.base + encodeURIComponent(username) : '#';
+        visitA.target = '_blank';
+        visitA.textContent = '↗ Visit';
+        visitA.style.cssText = 'padding:0.3rem 0.65rem;background:rgba(108,99,255,0.1);border:1px solid rgba(108,99,255,0.3);border-radius:6px;font-size:0.78rem;color:var(--primary,#6c63ff);white-space:nowrap;text-decoration:none;';
+
+        var removeBtn = document.createElement('button');
+        removeBtn.type = 'button';
+        removeBtn.textContent = '✕';
+        removeBtn.title = 'Remove ' + p.label;
+        removeBtn.style.cssText = 'background:none;border:none;color:var(--text-muted,#94a3b8);font-size:0.9rem;cursor:pointer;padding:0 0.2rem;line-height:1;';
+        removeBtn.onclick = (function(pid) {
+            return function() {
+                var hidden = document.getElementById(pid);
+                if (hidden) hidden.value = '';
+                var rowEl = document.getElementById('cp-row-' + pid);
+                if (rowEl) rowEl.remove();
+                renderCpDropdown();
+            };
+        })(p.id);
+
+        row.appendChild(badge);
+        row.appendChild(inp);
+        row.appendChild(visitA);
+        row.appendChild(removeBtn);
+        return row;
+    }
+
+    /* Rebuild dropdown with only platforms NOT yet in the list */
+    function renderCpDropdown() {
+        var dd = document.getElementById('cp-dropdown');
+        if (!dd) return;
+        dd.innerHTML = '';
+        var any = false;
+        CP_PLATFORMS.forEach(function(p) {
+            var hidden = document.getElementById(p.id);
+            if (hidden && hidden.value.trim()) return; // already added
+            any = true;
+            var opt = document.createElement('div');
+            opt.textContent = p.label;
+            opt.style.cssText = 'padding:0.55rem 1rem;font-size:0.85rem;cursor:pointer;color:var(--text,#1e293b);transition:background 0.15s;';
+            opt.onmouseover = function() { this.style.background = 'rgba(108,99,255,0.08)'; };
+            opt.onmouseout  = function() { this.style.background = ''; };
+            opt.onclick = (function(platform) {
+                return function() {
+                    addCpPlatform(platform);
+                    closeCpDropdown();
+                };
+            })(p);
+            dd.appendChild(opt);
+        });
+        if (!any) {
+            var note = document.createElement('div');
+            note.textContent = 'All platforms added ✓';
+            note.style.cssText = 'padding:0.55rem 1rem;font-size:0.82rem;color:var(--text-muted,#94a3b8);';
+            dd.appendChild(note);
+        }
+        // Hide the Add button when all platforms are added
+        var addBtn = document.getElementById('cp-add-btn');
+        if (addBtn) addBtn.style.display = any ? '' : 'none';
+    }
+
+    function addCpPlatform(p) {
+        var list = document.getElementById('cp-list');
+        if (!list || document.getElementById('cp-row-' + p.id)) return;
+        list.appendChild(makeCpRow(p, ''));
+        renderCpDropdown();
+        // Focus the new input
+        var newInp = document.querySelector('#cp-row-' + p.id + ' input');
+        if (newInp) newInp.focus();
+    }
+
+    function toggleCpDropdown() {
+        var dd = document.getElementById('cp-dropdown');
+        if (!dd) return;
+        dd.style.display = dd.style.display === 'none' ? 'block' : 'none';
+    }
+    function closeCpDropdown() {
+        var dd = document.getElementById('cp-dropdown');
+        if (dd) dd.style.display = 'none';
+    }
+
+    // Close dropdown when clicking outside
+    document.addEventListener('click', function(e) {
+        var btn = document.getElementById('cp-add-btn');
+        var dd  = document.getElementById('cp-dropdown');
+        if (dd && btn && !btn.contains(e.target) && !dd.contains(e.target)) {
+            dd.style.display = 'none';
+        }
+    });
+
+    document.addEventListener('DOMContentLoaded', renderCpList);
     </script>
 
     <!-- Delete Account Confirmation Modal -->
